@@ -4,9 +4,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 using namespace std;
 
-#include "stringManipulation.h"
+#include"DataProcess.h"
+#include"QueryProcess.h"
 
-#endif // !_FUCNTION_H_
+
+#endif // 
+
 

@@ -18,16 +18,27 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="stringManipulatation.cpp">
+    <ClCompile Include="QueryProcess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DataProcess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="function.h">
+    <ClInclude Include="DataProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stringManipulation.h">
+    <ClInclude Include="QueryProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="stopWords.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

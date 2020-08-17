@@ -1,4 +1,4 @@
-#include "stringManipulation.h"
+#include "QueryProcess.h"
 
 string removeStopWords(string query) {
 
@@ -21,8 +21,8 @@ string removeStopWords(string query) {
 	//can xu li them dau cach va cac ki tu dac biet
 	string tmp;
 	for (int i = 0; i < query.size(); ++i) {
-		if (query[i] == ' ' || i == query.size()-1) {
-			if (i == query.size()-1) {
+		if (query[i] == ' ' || i == query.size() - 1) {
+			if (i == query.size() - 1) {
 				if (query[i] != ' ') tmp += query[i];
 			}
 			if (!isStopWords(tmp, stopWords, numStopWords)) {

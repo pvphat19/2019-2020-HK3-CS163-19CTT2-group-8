@@ -138,12 +138,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DataProcess.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="stringManipulatation.cpp" />
+    <ClCompile Include="QueryProcess.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="function.h" />
-    <ClInclude Include="stringManipulation.h" />
+    <ClInclude Include="DataProcess.h" />
+    <ClInclude Include="Function.h" />
+    <ClInclude Include="QueryProcess.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="stopWords.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
