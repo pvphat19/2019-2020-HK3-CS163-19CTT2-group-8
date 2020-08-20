@@ -14,6 +14,8 @@ void toLower(string& text);
 // Check whether a word is a stop word.
 bool isStopWords(string word, string list[], int numStopWords);
 
+vector<int> queryType(string query);
+
 #endif
 
 
