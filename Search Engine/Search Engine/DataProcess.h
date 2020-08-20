@@ -23,4 +23,8 @@ void insertToTrie(trieNode* root, string keyword, int docNum);
 // Index the data of a document to trie.
 void indexData(trieNode* root, string path, vector<string> docPath);
 
+//=============SEARCH===========
+
+vector <int> searchKeyword(trieNode* root, string keyword);
+
 #endif

@@ -64,3 +64,22 @@ void indexData(trieNode* root, string path, vector<string> docPath) {
 
 
 // =========== SEARCH ===========
+
+vector <int> searchKeyword(trieNode* root, string keyword) {
+	vector <int> res;
+	trieNode* cur = root;
+
+	for (int i = 0; i < keyword.size(); ++i) {
+		int index;
+		if (keyword[i] > 'a' && keyword[i] < 'z') index = keyword[i] - 'a';
+		else index = keyword[i] - '0';
+
+		if (!cur->children[index]) return res;
+		cur = cur->children[index];
+
+	}
+	if (cur->isEndWord == true) {
+		res = cur->documents;
+	}
+	return res;
+}
