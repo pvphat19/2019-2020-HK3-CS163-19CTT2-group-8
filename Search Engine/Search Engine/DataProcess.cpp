@@ -25,7 +25,7 @@ void insertToTrie(trieNode* root, string keyword, int docNum) {
 	trieNode* cur = root;
 	for (int i = 0; i < keyword.length(); i++) {
 		int index;
-		if (keyword[i] > 'a')
+		if (keyword[i] >= 'a')
 			index = keyword[i] - 'a';
 		else index = keyword[i] - '0' + 26;
 
@@ -48,14 +48,8 @@ void indexData(trieNode* root, string path, vector<string> docPath) {
 	if (!in.is_open())
 		cout << "Error: Cannot open the document!\n";
 	else {
-		while (!in.eof()) {
-			string singleWord = "";
-			char c;
-			cin >> c;
-			while (c != ' ') {
-				singleWord += c;
-				cin >> c;
-			}
+		string singleWord;
+		while (in>>singleWord) {
 			insertToTrie(root, singleWord, docNum);
 		}
 		in.close();
@@ -83,3 +77,4 @@ vector <int> searchKeyword(trieNode* root, string keyword) {
 	}
 	return res;
 }
+

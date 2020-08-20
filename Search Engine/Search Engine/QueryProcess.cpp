@@ -54,17 +54,6 @@ void toLower(string& text) {
 		c = tolower(c);
 }
 
-// Check whether a word is a stop word.
-
-void toLower(string& text) {
-	for (int i = 0; i < text.size(); ++i) {
-		if (text[i] >= 'A' && text[i] <= 'Z') {
-			text[i] = text[i] - 'A' + 'a';
-		}
-	}
-}
-
-
 bool isStopWords(string word, string list[], int numStopWords) {
 	for (int i = 0; i < numStopWords; ++i) {
 		if (word == list[i]) return true;

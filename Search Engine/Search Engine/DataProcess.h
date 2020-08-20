@@ -27,4 +27,6 @@ void indexData(trieNode* root, string path, vector<string> docPath);
 
 vector <int> searchKeyword(trieNode* root, string keyword);
 
+
+
 #endif
