@@ -19,7 +19,7 @@ void deleteWholeTrie(trieNode* root) {
 	delete root;
 }
 
-// =========== INDEXING DATA =========== 
+// =========== INDEXING DATA ===========
 // Insert a single word/number to trie.
 void insertToTrie(trieNode* root, string keyword, int docNum) {
 	trieNode* cur = root;
@@ -76,5 +76,34 @@ vector <int> searchKeyword(trieNode* root, string keyword) {
 		res = cur->documents;
 	}
 	return res;
+}
+
+vector <int> searchFullText(trieNode* root, string text) {
+    int count_doc_appear[1000],count_words=0;
+    for (int i=0;i<1000;i++) count_doc_appear[1000]=0;
+
+    string tmp="";
+    vector <int> res;
+
+    for (int i=0;i<text.length();i++) {
+        if (text[i]==' ' || i=text.length()-1) {
+            vector <int> doc_temp;
+            doc_temp=searchKeyword(root,tmp);
+
+            for (int j=0;j<doc_temp.size();j++)
+                count_doc_appear[doc_temp[i]]++;
+
+            count_words++;
+            tmp="";
+        } else {
+            tmp+=text[i];
+        }
+    }
+
+    for (int i=0;i<1000;i++)
+        if (count_doc_appear[i]==count_words)
+            res.push_back(i);
+
+    return res;
 }
 
