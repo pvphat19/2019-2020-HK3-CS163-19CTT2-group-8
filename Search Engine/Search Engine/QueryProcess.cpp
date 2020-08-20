@@ -41,7 +41,18 @@ string removeStopWords(string query) {
 		}
 	}
 
+	toLower(res);
+
 	return res;
+}
+
+
+void toLower(string& text) {
+	for (int i = 0; i < text.size(); ++i) {
+		if (text[i] >= 'A' && text[i] <= 'Z') {
+			text[i] = text[i] - 'A' + 'a';
+		}
+	}
 }
 
 bool isStopWords(string word, string list[], int numStopWords) {
