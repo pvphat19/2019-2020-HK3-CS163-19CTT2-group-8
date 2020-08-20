@@ -44,6 +44,14 @@ string removeStopWords(string query) {
 	return res;
 }
 
+// ========== SUPPORTING FUNCTION ==========
+// Turn a string to lowercase.
+void toLower(string& text) {
+	for (char& c : text)
+		c = tolower(c);
+}
+
+// Check whether a word is a stop word.
 bool isStopWords(string word, string list[], int numStopWords) {
 	for (int i = 0; i < numStopWords; ++i) {
 		if (word == list[i]) return true;
