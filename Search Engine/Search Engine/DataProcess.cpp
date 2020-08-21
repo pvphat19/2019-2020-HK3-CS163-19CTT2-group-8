@@ -80,7 +80,7 @@ vector <int> searchKeyword(trieNode* root, string keyword) {
 
 vector <int> searchFullText(trieNode* root, string text) {
     int count_doc_appear[1000],count_words=0;
-    for (int i=0;i<1000;i++) count_doc_appear[1000]=0;
+    for (int i=0;i<1000;i++) count_doc_appear[i]=0;
 
     string tmp="";
     vector <int> res;
