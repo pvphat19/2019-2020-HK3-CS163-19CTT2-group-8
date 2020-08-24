@@ -40,5 +40,11 @@
     <Text Include="stopWords.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="mainTrie.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="titleTrie.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

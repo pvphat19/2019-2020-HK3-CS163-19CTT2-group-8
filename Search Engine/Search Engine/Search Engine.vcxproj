@@ -148,7 +148,9 @@
     <ClInclude Include="QueryProcess.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="mainTrie.txt" />
     <Text Include="stopWords.txt" />
+    <Text Include="titleTrie.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
