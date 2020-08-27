@@ -26,16 +26,37 @@ void saveTrieToFile(trieNode* root, ofstream& out, string word);
 void retrieve(trieNode*& root, ifstream& in, string address);
 
 
+
 // =========== INDEXING DATA ===========
 
 // Index the data of a document to trie.
 void indexData(trieNode* root, string path, vector<string> docPath);
 
-//============= SEARCH =============
+
+
+
+// ============= SEARCH =============
 
 vector <int> searchKeyword(trieNode* root, string keyword);
 
-//Find out the common documents
+// Find out the common documents.
 vector <int> searchFullText(trieNode* root, string text);
+
+
+
+
+
+
+
+// ============= OUTPUT =============
+
+void printDocName(vector<int>docNum, vector<string> docPath) {
+	cout << "Top 5 results document: \n";
+	for (int i = 0; i < docNum.size(); i++) {
+		int docnum = docNum.at(i);
+		string docName = docPath.at(docnum);
+		cout << "\tDocument " << i + 1 << " :" << docName << "\n";
+	}
+}
 
 #endif

@@ -106,6 +106,40 @@ void indexData(trieNode* root, string path, vector<string> docPath) {
 		in.close();
 	}
 }
+// Index the title of document to title trie.
+void indexTitle(trieNode* titelTrie, string path) {
+
+}
+
+// Get doc path from user and index it.
+// sau khi hoan thien nhung argument nay se la global variable
+void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector<string>docPath) {
+	cout << "Please enter the path to document: \n\t";
+	string path; 
+	cin >> path;
+	// Add document path to file "__index.txt".
+	ofstream out;
+	out.open("__index.txt", ios::ate);
+	if (out.is_open()) {
+		out << path;
+		out.close();
+	}
+	// Index to main trie.
+	indexData(mainTrie, path, docPath);
+	// Index its title to title trie.
+	indexTitle(titleTrie, path);
+}
+
+// Read all doc names in "__index.txt" to vector<string>docPath.
+void buildDocPath(vector<string> docPath) {
+	ifstream in;
+	in.open("__index.txt");
+	if (in.is_open()) {
+
+		in.close();
+	}
+}
+
 
 
 // =========== SEARCH ===========
