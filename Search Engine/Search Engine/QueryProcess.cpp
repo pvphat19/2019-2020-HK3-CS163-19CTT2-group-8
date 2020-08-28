@@ -1,5 +1,27 @@
 #include "QueryProcess.h"
 
+//remove symbols and punctuation
+//not remove '.', '#', '$', '-', '+', '*', '~', '\'' and space
+string removeSymbols(string query) {
+	string tmp = query;
+
+	for (int i = 0; i < tmp.size();) {
+		if (tmp[i] >= 'a' && tmp[i] <= 'z');
+		else if (tmp[i] >= 'A' && tmp[i] <= 'Z');
+		else if (tmp[i] >= '0' && tmp[i] <= '9');
+		else if (tmp[i] == '.' || tmp[i] == '#' || tmp[i] == '$' || tmp[i] == '-' || tmp[i] == '+' || tmp[i] == '*' || tmp[i] == '~' || tmp[i] == '\'');
+		else if (tmp[i] == ' ');
+		else {
+			tmp.erase(i, 1);
+			i--;//i will not increase in that case, so we need to minus 1 so that it will increase 1 in the end
+		}
+		i++;
+	}
+
+	return tmp;
+}
+
+//remove all stop words, redundant spaces and turn query into lowercase
 string removeStopWords(string query) {
 
 	string res;
@@ -11,14 +33,16 @@ string removeStopWords(string query) {
 		return query;
 	}
 
-	string stopWords[500];
+	string stopWords[300];
 	int numStopWords = 0;
 	while (!in.eof()) {
 		getline(in, stopWords[numStopWords], '\n');
 		numStopWords++;
 	}
 
-	//can xu li them dau cach va cac ki tu dac biet
+	toLower(res);
+
+	//can xu li them cac ki tu dac biet
 	string tmp;
 	for (int i = 0; i < query.size(); ++i) {
 		if (query[i] == ' ' || i == query.size() - 1) {
@@ -41,10 +65,9 @@ string removeStopWords(string query) {
 		}
 	}
 
-	toLower(res);
-
 	return res;
 }
+
 
 vector<int> queryType(string query) {
 	//tra ve loai query tuong ung voi 12 loai cua thay
@@ -75,12 +98,14 @@ void toLower(string& text) {
 	}
 }
 
+//check if a word is stop word or not
 bool isStopWords(string word, string list[], int numStopWords) {
 	for (int i = 0; i < numStopWords; ++i) {
 		if (word == list[i]) return true;
 	}
 	return false;
 }
+
 
 bool isExactlyMatch(int docNum, vector<string> docPath, string query) {
 	string path = docPath.at(docNum);

@@ -18,6 +18,10 @@ void insertToTrie(trieNode* root, string keyword, vector<int> docNum) {
 			index = keyword[i] - 'a';
 		else if (keyword[i] == '\'')
 			index = 36;
+		else if (keyword[i] == '#')
+			index = 37;
+		else if (keyword[i] == '$')
+			index = 38;
 		else index = keyword[i] - '0' + 26;
 
 		if (!cur->children[index])
@@ -55,6 +59,8 @@ void saveTrieToFile(trieNode* root, ofstream &out, string word) {
 			char c;
 			if (i < 26) c = i + 'a';
 			else if (i == 36) c = '\'';
+			else if (i == 37) c = '#';
+			else if (i == 38) c = '$';
 			else c = i - 26 + '0';
 			string tem = word;
 			word += c;
@@ -151,6 +157,9 @@ vector <int> searchKeyword(trieNode* root, string keyword) {
 	for (int i = 0; i < keyword.size(); ++i) {
 		int index;
 		if (keyword[i] > 'a' && keyword[i] < 'z') index = keyword[i] - 'a';
+		else if (keyword[i] == '\'') index = 36;
+		else if (keyword[i] == '#') index = 37;
+		else if (keyword[i] == '$') index = 38;
 		else index = keyword[i] - '0';
 
 		if (!cur->children[index]) return res;
@@ -190,5 +199,30 @@ vector <int> searchFullText(trieNode* root, string text) {
             res.push_back(i);
 
     return res;
+}
+
+// ==========OPERATOR=============
+
+//Operator 7: Search for a price. Put $ in front of a number. For example: $400
+vector <int> searchForPrice(trieNode* root, string price) {
+	vector<int> res;
+	res = searchKeyword(root, price);
+	return res;
+}
+
+//Operator 8: Search hashtags. Put # in front of a word. For example: #helloworld
+vector <int> searchHashtag(trieNode* root, string hashtag) {
+	vector<int> res;
+	res = searchKeyword(root, hashtag);
+	return res;
+}
+
+//Operator 11: Search for a range of number. Put .. between two numbers. For example: $50..$100
+vector <int> searchRangeOfNumber(trieNode* root, string range) {
+	vector <int> res;
+
+
+
+	return res;
 }
 

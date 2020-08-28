@@ -4,8 +4,13 @@
 #include "Function.h"
 
 // ========== TRIE IMPLEMENTION ==========
-const int SIZE = 37;
+const int SIZE = 39;
 
+//a-z: 0-25
+//0-9: 26-35
+//'\'': 36
+//'#': 37
+//'$': 38
 struct trieNode {
 	trieNode* children[SIZE];
 	bool isEndWord;
