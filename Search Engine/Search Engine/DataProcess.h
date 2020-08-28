@@ -55,13 +55,5 @@ vector <int> searchFullText(trieNode* root, string text);
 
 // ============= OUTPUT =============
 
-void printDocName(vector<int>docNum, vector<string> docPath) {
-	cout << "Top 5 results document: \n";
-	for (int i = 0; i < docNum.size(); i++) {
-		int docnum = docNum.at(i);
-		string docName = docPath.at(docnum);
-		cout << "\tDocument " << i + 1 << " :" << docName << "\n";
-	}
-}
 
 #endif
