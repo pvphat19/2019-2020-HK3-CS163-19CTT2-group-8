@@ -10,7 +10,12 @@ string removeSymbols(string query) {
 		else if (tmp[i] >= 'A' && tmp[i] <= 'Z');
 		else if (tmp[i] >= '0' && tmp[i] <= '9');
 		else if (tmp[i] == '.' || tmp[i] == '#' || tmp[i] == '$' || tmp[i] == '-' || tmp[i] == '+' || tmp[i] == '*' || tmp[i] == '~' || tmp[i] == '\'');
-		else if (tmp[i] == ' ');
+		else if (tmp[i] == ' ') {
+			if (tmp[i + 1] == ' ') {
+				tmp.erase(i, 1);
+				i--;
+			}
+		}
 		else {
 			tmp.erase(i, 1);
 			i--;//i will not increase in that case, so we need to minus 1 so that it will increase 1 in the end

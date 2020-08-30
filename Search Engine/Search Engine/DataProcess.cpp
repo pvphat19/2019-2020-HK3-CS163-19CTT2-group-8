@@ -93,7 +93,7 @@ void retrieve(trieNode*& root, ifstream& in, string address) {
 }
 
 // =========== INDEXING DATA ===========
-// Index the data of a document to trie.
+// Index the data of a document to trie. (and push its path to vector docPath)
 void indexData(trieNode* root, string path, vector<string> docPath) {
 	int docnum = docPath.size();
 	vector<int>docNum;
@@ -112,13 +112,32 @@ void indexData(trieNode* root, string path, vector<string> docPath) {
 		in.close();
 	}
 }
-// Index the title of document to title trie.
-void indexTitle(trieNode* titelTrie, string path) {
 
+// Index the title of a document to title trie.
+void indexTitle(trieNode* titleTrie, string path, vector<string> docPath) {
+	vector <int> docNum;
+	docNum.push_back(docPath.size());
+
+	ifstream in;
+	in.open(path);
+	if (in.is_open()) {
+		string line;
+		getline(in, line);
+		while (line.size()) {
+			stringstream words(line);
+			string word;
+			while (words >> word) {
+				insertToTrie(titleTrie, word, docNum);
+			}
+			line = "";
+			getline(in,line);
+		}
+		in.close();
+	}
 }
 
 // Get doc path from user and index it.
-// sau khi hoan thien nhung argument nay se la global variable
+// sau khi hoan thien nhung argument nay se la global variables
 void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector<string>docPath) {
 	cout << "Please enter the path to document: \n\t";
 	string path; 
@@ -133,7 +152,7 @@ void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector<string>docP
 	// Index to main trie.
 	indexData(mainTrie, path, docPath);
 	// Index its title to title trie.
-	indexTitle(titleTrie, path);
+	indexTitle(titleTrie, path, docPath);
 }
 
 // Read all doc names in "__index.txt" to vector<string>docPath.

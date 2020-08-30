@@ -5,12 +5,12 @@
 
 // ========== TRIE IMPLEMENTION ==========
 const int SIZE = 39;
+      //a-z: 0-25
+      //0-9: 26-35
+      //'\'': 36
+      //'#': 37
+      //'$': 38
 
-//a-z: 0-25
-//0-9: 26-35
-//'\'': 36
-//'#': 37
-//'$': 38
 struct trieNode {
 	trieNode* children[SIZE];
 	bool isEndWord;
@@ -36,6 +36,9 @@ void retrieve(trieNode*& root, ifstream& in, string address);
 
 // Index the data of a document to trie.
 void indexData(trieNode* root, string path, vector<string> docPath);
+
+// Index the title of a document to title trie.
+void indexTitle(trieNode* titleTrie, string path, vector<string> docPath);
 
 
 
