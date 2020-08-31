@@ -50,7 +50,20 @@ vector <int> searchKeyword(trieNode* root, string keyword);
 // Find out the common documents.
 vector <int> searchFullText(trieNode* root, string text);
 
+//=============OPERATOR===============
+//Operator 7
+vector <int> searchForPrice(trieNode* root, string price);
 
+//Operator 8
+vector <int> searchHashtag(trieNode* root, string hashtag);
+
+//Operator 11
+vector <int> searchRangeOfNumber(trieNode* root, string range);
+
+//=================SUPPORT FUNCTION==========
+int compareNumber(string num1, string num2);
+
+void searchRange(trieNode* cur, vector<int> res, string num1, string num2, string currentNumber);
 
 
 

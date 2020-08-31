@@ -237,11 +237,105 @@ vector <int> searchHashtag(trieNode* root, string hashtag) {
 }
 
 //Operator 11: Search for a range of number. Put .. between two numbers. For example: $50..$100
+//range in form of: 100..200 or $100..$200, the smaller must be in front of the larger
 vector <int> searchRangeOfNumber(trieNode* root, string range) {
 	vector <int> res;
 
+	if (range[0] == '$') {
+		//get two numbers in the range
+		string num1;
+		string num2;
+		int beginNum2 = 0;
+		for (int i = 1; i < range.size() - 1; ++i) {
+			if (range[i] == '.' && range[i + 1] == '.') {
+				beginNum2 = i;
+				break;
+			}
+			else {
+				num1 += range[i];
+			}
+		}
+		beginNum2 += 3;
+		for (int i = beginNum2; i < range.size(); ++i) {
+			num2 += range[i];
+		}
 
+		trieNode* cur = root->children[38];
+		if (cur == nullptr) return res;
+		searchRange(cur, res, num1, num2, "");
+
+	}
+	else {
+		//get two numbers in the range
+		string num1;
+		string num2;
+		int beginNum2 = 0;
+		for (int i = 0; i < range.size() - 1; ++i) {
+			if (range[i] == '.' && range[i + 1] == '.') {
+				beginNum2 = i;
+				break;
+			}
+			else {
+				num1 += range[i];
+			}
+		}
+		beginNum2 += 2;
+		for (int i = beginNum2; i < range.size(); ++i) {
+			num2 += range[i];
+		}
+
+		trieNode* cur = root;
+		if (cur == nullptr) return res;
+		searchRange(cur, res, num1, num2, "");
+	}
 
 	return res;
+}
+
+//============SUPPORTING FUNCTION====================
+
+//search range of number
+//still work with integer only
+void searchRange(trieNode* cur, vector<int> res, string num1, string num2, string currentNumber) {
+	if (cur == nullptr) return;
+
+	if (currentNumber != "") {
+		if (stof(currentNumber) > stof(num2)) return;//if the current number is bigger than number 2, stop branch. (stof converts to float)
+		if (stoi(currentNumber) < stoi(num1)) return;//if the current number is smaller than number 2, stop branch. (stoi converts to integer)
+		if (cur->isEndWord) {
+			if (stof(currentNumber) >= stof(num1)) {//check if it is truly greater than number 1 or not
+				for (int i = 0; i < cur->documents.size(); ++i) {
+					bool t = true;
+					for (int j = 0; j < res.size(); ++j) {
+						if (cur->documents[i] == res[j]) {
+							t = false;
+							break;
+						}
+					}
+					if (t == true) {//it has not been add to result list yet
+						res.push_back(cur->documents[i]);
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 26; i <= 35; ++i) {
+		if (cur->children[i] != nullptr) {
+			char tmp = '0' + i - 26;
+			searchRange(cur, res, num1, num2, currentNumber + tmp);
+		}
+	}
+}
+
+
+//compare two number in string form
+//return -1, 0, 1 for smaller than, equal to or bigger than respectively
+int compareNumber(string num1, string num2) {
+	float number1 = stof(num1);
+	float number2 = stof(num2);
+	if (number1 - number2 > 0) return 1;
+	else if (number1 - number2 < 0) return -1;
+	return 0;
 }
 
