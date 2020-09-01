@@ -62,33 +62,48 @@ vector <int> searchKeyword(trieNode* root, string keyword);
 vector <int> searchFullText(trieNode* root, string text);
 
 //Find out the common documents from many strings.
-//vector <int> searchTextfromVector (trieNode* root, vector <string> t);
+vector <int> searchTextfromVector (trieNode* root, vector <string> t);
 
-//=============OPERATOR===============
 
-//Operator 2
+
+// ============= OPERATOR =============
+// Operator 1
+vector <int> searchAnd(trieNode* root, string query);
+
+// Operator 2
 vector <int> searchOr(trieNode* root, string text);
 
-//Operator 3
+// Operator 3
 vector <int> searchWithoutaWord(trieNode* root, string text);
 
-//Operator 4
+// Operator 4
 vector <int> searchTitle (trieNode* titleTrie, string text);
 
-//Operator 7
+// Operator 5
+vector<int> operator5(trieNode* root, string query, vector<string>docPath);
+
+// Operator 7
 vector <int> searchForPrice(trieNode* root, string price);
 
-//Operator 8
+// Operator 8
 vector <int> searchHashtag(trieNode* root, string hashtag);
 
-//Operator 11
+// Operator 9
+vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPath);
+
+// Operator 11
 vector <int> searchRangeOfNumber(trieNode* root, string range);
 
-//=================SUPPORT FUNCTION==========
+
+
+
+// ============ SUPPORT FUNCTION ============
+
 int compareNumber(string num1, string num2);
 
 void searchRange(trieNode* cur, vector<int> res, string num1, string num2, string currentNumber);
 
+bool isInList(vector<int> list, int n);
 
 
 
