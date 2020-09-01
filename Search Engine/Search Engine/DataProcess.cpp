@@ -94,29 +94,39 @@ void retrieve(trieNode*& root, ifstream& in, string address) {
 
 // =========== INDEXING DATA ===========
 // Index the data of a document to trie. (and push its path to vector docPath)
-void indexData(trieNode* root, string path, vector<string> docPath) {
-	int docnum = docPath.size();
-	vector<int>docNum;
+void indexMainTrie(trieNode* mainTrie, string path, int docnum) {
+	vector<int> docNum;
 	docNum.push_back(docnum);
-	docPath.push_back(path);
 
 	ifstream in;
 	in.open(path);
-	if (!in.is_open())
-		cout << "Error: Cannot open the document!\n";
-	else {
+	if (in.is_open()) {
 		string singleWord;
-		while (in>>singleWord) {
-			insertToTrie(root, singleWord, docNum);
+		while (in >> singleWord) {
+			toLower(singleWord);
+			if(isWord(singleWord))
+				insertToTrie(mainTrie, singleWord, docNum);
 		}
 		in.close();
 	}
 }
 
+// Check whether a word is right or not.
+bool isWord(string word) {
+	for (int i = 0; i < word.size(); i++) {
+		if (word[i] >= 'a' && word[i] <= 'z');
+		else if (word[i] >= '0' && word[i] <= '9');
+		else if (word[i] == '#' || word[i] == '$' || word[i] == '\'');
+		else return false;
+	}
+	return true;
+}
+
+
 // Index the title of a document to title trie.
-void indexTitle(trieNode* titleTrie, string path, vector<string> docPath) {
-	vector <int> docNum;
-	docNum.push_back(docPath.size());
+void indexTitle(trieNode* titleTrie, string path, int docnum) {
+	vector<int>docNum;
+	docNum.push_back(docnum);
 
 	ifstream in;
 	in.open(path);
@@ -127,44 +137,61 @@ void indexTitle(trieNode* titleTrie, string path, vector<string> docPath) {
 			stringstream words(line);
 			string word;
 			while (words >> word) {
-				insertToTrie(titleTrie, word, docNum);
+				if(isWord(word))
+					insertToTrie(titleTrie, word, docNum);
 			}
 			line = "";
-			getline(in,line);
+			getline(in, line);
 		}
 		in.close();
 	}
 }
 
 // Get doc path from user and index it.
-// sau khi hoan thien nhung argument nay se la global variables
-void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector<string>docPath) {
+void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& docPath) {
 	cout << "Please enter the path to document: \n\t";
 	string path;
 	cin >> path;
 	// Add document path to file "__index.txt".
 	ofstream out;
-	out.open("__index.txt", ios::ate);
+	out.open("Search Engine-Data/___index.txt", ios::ate);
 	if (out.is_open()) {
 		out << path;
 		out.close();
 	}
+	// Add document path to vector<string>docPath.
+	int docnum = docPath.size();
+	docPath.push_back(path);
+
 	// Index to main trie.
-	indexData(mainTrie, path, docPath);
+	indexMainTrie(mainTrie, path, docnum);
 	// Index its title to title trie.
-	indexTitle(titleTrie, path, docPath);
+	indexTitle(titleTrie, path, docnum);
 }
 
-// Read all doc names in "__index.txt" to vector<string>docPath.
-void buildDocPath(vector<string> docPath) {
-	ifstream in;
-	in.open("__index.txt");
-	if (in.is_open()) {
-
-		in.close();
+// Index all data.
+void indexAllData(trieNode* mainTrie, trieNode* titleTrie, vector <string> & docPath) {
+	for (int i = 0; i < docPath.size(); i++) {
+		string path = docPath.at(i);
+		indexMainTrie(mainTrie, path, i);
+		indexTitle(titleTrie, path, i);
 	}
 }
 
+// Read all doc names in "__index.txt" to vector<string>docPath.
+void buildDocPath(vector <string> &docPath) {
+	ifstream in;
+	in.open("Search Engine-Data/___index.txt");
+	if (in.is_open()) {
+		while (!in.eof()) {
+			string file;
+			getline(in, file);
+			file = "Search Engine-Data/" + file;
+			docPath.push_back(file);
+		}
+		in.close();
+	}
+}
 
 
 // =========== SEARCH ===========
@@ -244,7 +271,7 @@ vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
 
 // ==========OPERATOR=============
 
-//Operator 2: Search a text which contains "or". For example: X or C
+// Operator 2: Search a text which contains "or". For example: X or C
 vector <int> searchOr (trieNode* root, string text) {
     string tmp="";
     vector <string> split;
@@ -260,8 +287,8 @@ vector <int> searchOr (trieNode* root, string text) {
     return res;
 }
 
-//Operator 3: Search a text which do not contain a word. For example: Manchester -united
-//It will search all the document which contain "Manchester" and do not contain "united"
+// Operator 3: Search a text which do not contain a word. For example: Manchester -united
+// It will search all the document which contain "Manchester" and do not contain "united"
 vector <int> searchWithoutaWord(trieNode* root, string text) {
     string tmp="";
     vector <string> split;

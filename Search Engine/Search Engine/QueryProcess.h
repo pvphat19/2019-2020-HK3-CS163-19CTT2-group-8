@@ -3,7 +3,7 @@
 
 #include "Function.h"
 
-
+string removeSymbols(string query);
 string removeStopWords(string query);
 vector<int> queryType(string query);
 

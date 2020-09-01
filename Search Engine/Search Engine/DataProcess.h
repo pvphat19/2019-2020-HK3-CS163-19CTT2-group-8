@@ -30,17 +30,28 @@ void saveTrieToFile(trieNode* root, ofstream& out, string word);
 // Read a trie from a text file.
 void retrieve(trieNode*& root, ifstream& in, string address);
 
+// Check whether a word is right or not.
+bool isWord(string word);
+
+
 
 
 // =========== INDEXING DATA ===========
 
-// Index the data of a document to trie.
-void indexData(trieNode* root, string path, vector<string> docPath);
+// Index the data of a document to trie. (and push its path to vector docPath)
+void indexMainTrie(trieNode* mainTrie, string path, int docnum);
 
 // Index the title of a document to title trie.
-void indexTitle(trieNode* titleTrie, string path, vector<string> docPath);
+void indexTitle(trieNode* titleTrie, string path, int docnum);
 
+// Get doc path from user and index it.
+void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& docPath);
 
+// Index all data.
+void indexAllData(trieNode* mainTrie, trieNode* titleTrie, vector<string>& docPath);
+
+// Read all doc names in "__index.txt" to vector<string>docPath.
+void buildDocPath(vector<string> &docPath);
 
 
 // ============= SEARCH =============
@@ -51,7 +62,7 @@ vector <int> searchKeyword(trieNode* root, string keyword);
 vector <int> searchFullText(trieNode* root, string text);
 
 //Find out the common documents from many strings.
-vector <int> searchTextfromVector (trieNode* root, vector <string> t);
+//vector <int> searchTextfromVector (trieNode* root, vector <string> t);
 
 //=============OPERATOR===============
 
