@@ -47,8 +47,11 @@ void indexTitle(trieNode* titleTrie, string path, vector<string> docPath);
 
 vector <int> searchKeyword(trieNode* root, string keyword);
 
-// Find out the common documents.
+// Find out the common documents from a string.
 vector <int> searchFullText(trieNode* root, string text);
+
+//Find out the common documents from many strings.
+vector <int> searchTextfromVector (trieNode* root, vector <string> t);
 
 //=============OPERATOR===============
 //Operator 7

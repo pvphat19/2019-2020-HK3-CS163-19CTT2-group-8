@@ -140,7 +140,7 @@ void indexTitle(trieNode* titleTrie, string path, vector<string> docPath) {
 // sau khi hoan thien nhung argument nay se la global variables
 void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector<string>docPath) {
 	cout << "Please enter the path to document: \n\t";
-	string path; 
+	string path;
 	cin >> path;
 	// Add document path to file "__index.txt".
 	ofstream out;
@@ -215,6 +215,28 @@ vector <int> searchFullText(trieNode* root, string text) {
 
     for (int i=0;i<1000;i++)
         if (count_doc_appear[i]==count_words)
+            res.push_back(i);
+
+    return res;
+}
+
+vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
+    vector <int> res;
+    vector <int> _doc[t.size()];
+    int count_doc_appear[1000];
+
+    for (int i=0;i<1000;i++) count_doc_appear[i]=0;
+
+    for (int i=0;i<t.size();i++)
+        _doc[i]=searchFullText(root,t[i]);
+
+    for (int i=0;i<t.size();i++) {
+        for (int j=0;j<_doc[i].size();j++)
+            count_doc_appear[j]++;
+    }
+
+    for (int i=0;i<1000;i++)
+        if (count_doc_appear[i]==t.size());
             res.push_back(i);
 
     return res;
