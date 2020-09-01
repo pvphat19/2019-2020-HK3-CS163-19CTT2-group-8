@@ -192,8 +192,8 @@ vector <int> searchKeyword(trieNode* root, string keyword) {
 }
 
 vector <int> searchFullText(trieNode* root, string text) {
-    int count_doc_appear[1000],count_words=0;
-    for (int i=0;i<1000;i++) count_doc_appear[i]=0;
+    int count_doc_appear[12000],count_words=0;
+    for (int i=0;i<12000;i++) count_doc_appear[i]=0;
 
     string tmp="";
     vector <int> res;
@@ -213,7 +213,7 @@ vector <int> searchFullText(trieNode* root, string text) {
         }
     }
 
-    for (int i=0;i<1000;i++)
+    for (int i=0;i<12000;i++)
         if (count_doc_appear[i]==count_words)
             res.push_back(i);
 
@@ -223,9 +223,9 @@ vector <int> searchFullText(trieNode* root, string text) {
 vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
     vector <int> res;
     vector <int> _doc[t.size()];
-    int count_doc_appear[1000];
+    int count_doc_appear[12000];
 
-    for (int i=0;i<1000;i++) count_doc_appear[i]=0;
+    for (int i=0;i<12000;i++) count_doc_appear[i]=0;
 
     for (int i=0;i<t.size();i++)
         _doc[i]=searchFullText(root,t[i]);
@@ -235,7 +235,7 @@ vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
             count_doc_appear[j]++;
     }
 
-    for (int i=0;i<1000;i++)
+    for (int i=0;i<12000;i++)
         if (count_doc_appear[i]==t.size());
             res.push_back(i);
 
