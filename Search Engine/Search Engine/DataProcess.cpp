@@ -236,13 +236,83 @@ vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
     }
 
     for (int i=0;i<12000;i++)
-        if (count_doc_appear[i]==t.size());
+        if (count_doc_appear[i]==t.size())
             res.push_back(i);
 
     return res;
 }
 
 // ==========OPERATOR=============
+
+//Operator 2: Search a text which contains "or". For example: X or C
+vector <int> searchOr (trieNode* root, string text) {
+    string tmp="";
+    vector <string> split;
+    vector <int> res,temp_res;
+
+    for (int i=0;i<text.length();i++) {
+        if (text[i]==' ') {
+            if (tmp!="or") split.push_back(tmp);
+            tmp="";
+        } else tmp+=text[i];
+    }
+    res=searchTextfromVector(root,split);
+    return res;
+}
+
+//Operator 3: Search a text which do not contain a word. For example: Manchester -united
+//It will search all the document which contain "Manchester" and do not contain "united"
+vector <int> searchWithoutaWord(trieNode* root, string text) {
+    string tmp="";
+    vector <string> split;
+    vector <int> res,temp_res,eliminate_doc;
+    string word_eliminate="";
+
+    int i=0;
+    while (i<text.length()-1) {
+        if (text[i]==' ') {
+            if (text[i+1]='-') {
+                int j=i+2;
+                while (text[j] != ' ') {
+                    word_eliminate+=text[j];
+                    j++;
+                }
+                i=j;
+            } else {
+                split.push_back(tmp);
+                tmp="";
+            }
+        } else tmp+=text[i];
+        i++;
+    }
+
+    temp_res=searchTextfromVector(root,split);
+    eliminate_doc=searchFullText(root,word_eliminate);
+
+    for (int k=0;k<temp_res.size();k++) {
+        int flag=0;
+
+        for (int t=0;t<eliminate_doc.size();t++) {
+            if (temp_res[k] == eliminate_doc[t]) {
+                flag++;
+                break;
+            }
+        }
+
+        if (flag==0) res.push_back(k);
+    }
+
+    return res;
+}
+
+//Operator 4: Search for a title of a document. For example: intitle:hammer nails
+vector <int> searchTitle (trieNode* titleTrie, string text) {
+    string new_text="";
+    vector <int> res;
+    for (int i=8;i<text.length();i++) new_text+=text[i];
+    res=searchFullText(titleTrie,new_text);
+    return res;
+}
 
 //Operator 7: Search for a price. Put $ in front of a number. For example: $400
 vector <int> searchForPrice(trieNode* root, string price) {

@@ -54,6 +54,16 @@ vector <int> searchFullText(trieNode* root, string text);
 vector <int> searchTextfromVector (trieNode* root, vector <string> t);
 
 //=============OPERATOR===============
+
+//Operator 2
+vector <int> searchOr(trieNode* root, string text);
+
+//Operator 3
+vector <int> searchWithoutaWord(trieNode* root, string text);
+
+//Operator 4
+vector <int> searchTitle (trieNode* titleTrie, string text);
+
 //Operator 7
 vector <int> searchForPrice(trieNode* root, string price);
 
