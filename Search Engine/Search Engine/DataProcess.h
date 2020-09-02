@@ -75,6 +75,9 @@ vector <int> searchWithoutaWord(trieNode* root, string text);
 //Operator 4
 vector <int> searchTitle (trieNode* titleTrie, string text);
 
+//Operator 6
+vector <int> searchFiletype (trieNode* root, string text, vector <string> docPath);
+
 //Operator 7
 vector <int> searchForPrice(trieNode* root, string price);
 
@@ -89,8 +92,7 @@ int compareNumber(string num1, string num2);
 
 void searchRange(trieNode* cur, vector<int> res, string num1, string num2, string currentNumber);
 
-
-
+string fileType(string doc_Path);
 
 
 // ============= OUTPUT =============

@@ -360,6 +360,41 @@ vector <int> searchTitle (trieNode* titleTrie, string text) {
     return res;
 }
 
+//Operator 6: Search for a filetype. For example: filetype:txt + text search
+//should be at the first position of the string
+vector <int> searchFiletype (trieNode* root, string text, vector <string> docPath) {
+    vector <string> type;
+    vector <int> res,tmp_res;
+    string tmp="";
+    string new_text="";
+    int i=9;
+    while (text[i]!=' ') {
+        if (text[i+1]==' ' || text[i]==',') {
+            type.push_back(tmp);
+            tmp="";
+        } else {
+            tmp+=text[i];
+        }
+        i++;
+    }
+    i++;
+
+    for (int j=i;j<text.length();j++) new_text += text[j];
+    tmp_res=searchFullText(root,new_text);
+
+    for (int j=0;j<tmp_res.size();j++) {
+        string tmp_type=fileType(docPath[tmp_res[j]]);
+        for (int k=0;k<type.size();k++) {
+            if (tmp_type==type[k]) {
+                res.push_back(j);
+                break;
+            }
+        }
+    }
+
+    return res;
+}
+
 //Operator 7: Search for a price. Put $ in front of a number. For example: $400
 vector <int> searchForPrice(trieNode* root, string price) {
 	vector<int> res;
@@ -475,5 +510,20 @@ int compareNumber(string num1, string num2) {
 	if (number1 - number2 > 0) return 1;
 	else if (number1 - number2 < 0) return -1;
 	return 0;
+}
+
+string fileType (string doc_Path) {
+    int mark_point;
+    for (int i=doc_Path.length();i>=0;i--) {
+        if (doc_Path[i]=='.') {
+            mark_point=i+1;
+            break;
+        }
+    }
+    string res="";
+    for (int i=mark_point;i<doc_Path.length();i++) {
+        res+=doc_Path[i];
+    }
+    return res;
 }
 
