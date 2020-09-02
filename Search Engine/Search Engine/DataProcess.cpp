@@ -30,13 +30,13 @@ void insertToTrie(trieNode* root, string keyword, vector<int> docNum) {
 		cur = cur->children[index];
 	}
 
-	cur->isEndWord = true; 
+	cur->isEndWord = true;
 	if (docNum.size() == 1) {
 		if (!isInList(cur->documents, docNum.at(0)))
 			cur->documents.push_back(docNum.at(0));
 	}
 	else {
-		for (int i = 0; i < docNum.size(); i++) 
+		for (int i = 0; i < docNum.size(); i++)
 			cur->documents.push_back(docNum.at(i));
 	}
 }
@@ -243,7 +243,7 @@ vector <int> searchFullText(trieNode* root, string text) {
             doc_temp=searchKeyword(root,tmp);
 
             for (int j=0;j<doc_temp.size();j++)
-                count_doc_appear[doc_temp[i]]++;
+                count_doc_appear[doc_temp[j]]++;
 
             count_words++;
             tmp="";
