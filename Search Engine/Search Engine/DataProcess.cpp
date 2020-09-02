@@ -31,8 +31,12 @@ void insertToTrie(trieNode* root, string keyword, vector<int> docNum) {
 	}
 
 	cur->isEndWord = true; 
-	for (int i = 0; i < docNum.size(); i++) {
-		if (!isInList(cur->documents, docNum.at(i)))
+	if (docNum.size() == 1) {
+		if (!isInList(cur->documents, docNum.at(0)))
+			cur->documents.push_back(docNum.at(0));
+	}
+	else {
+		for (int i = 0; i < docNum.size(); i++) 
 			cur->documents.push_back(docNum.at(i));
 	}
 }
@@ -107,7 +111,6 @@ void indexMainTrie(trieNode* mainTrie, string path, int docnum) {
 		string singleWord;
 		while (in >> singleWord) {
 			toLower(singleWord);
-			removeStopWords(singleWord);
 			if(isWord(singleWord))
 				insertToTrie(mainTrie, singleWord, docNum);
 		}
@@ -142,7 +145,6 @@ void indexTitle(trieNode* titleTrie, string path, int docnum) {
 			string word;
 			while (words >> word) {
 				toLower(word);
-				removeStopWords(word);
 				if(isWord(word))
 					insertToTrie(titleTrie, word, docNum);
 			}
@@ -258,46 +260,9 @@ vector <int> searchFullText(trieNode* root, string text) {
 }
 
 
-//vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
-//    vector <int> res;
-//    vector <int> _doc[t.size()];
-//    int count_doc_appear[12000];
-//
-//    for (int i=0;i<12000;i++) count_doc_appear[i]=0;
-//
-//    for (int i=0;i<t.size();i++)
-//        _doc[i]=searchFullText(root,t[i]);
-//
-//    for (int i=0;i<t.size();i++) {
-//        for (int j=0;j<_doc[i].size();j++)
-//            count_doc_appear[j]++;
-//    }
-//
-//    for (int i=0;i<12000;i++)
-//        if (count_doc_appear[i]==t.size())
-//            res.push_back(i);
-//
-//    return res;
-//}
-
-// ==========OPERATOR=============
-
-// Operator 1: And operator.
-vector <int> searchAnd(trieNode* root, string query) {
-	stringstream words(query);
-	string word;
-	string tem = "";
-	while (words >> word) {
-		if (word != "and") {
-			tem += word;
-		}
-	}
-	return searchFullText(root, tem);
-}
-
 vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
     vector <int> res;
-    vector <int> *_doc = new vector <int>[t.size()];
+	vector <int>* _doc = new vector <int>[t.size()];
     int count_doc_appear[12000];
 
     for (int i=0;i<12000;i++) count_doc_appear[i]=0;
@@ -314,12 +279,23 @@ vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
         if (count_doc_appear[i]==t.size())
             res.push_back(i);
 
-    delete[] _doc;
-
+	delete[]_doc;
     return res;
 }
 
 // ==========OPERATOR=============
+// Operator 1: And operator.
+vector <int> searchAnd(trieNode* root, string query) {
+	stringstream words(query);
+	string word;
+	string tem = "";
+	while (words >> word) {
+		if (word != "and") {
+			tem += word;
+		}
+	}
+	return searchFullText(root, tem);
+}
 
 // Operator 2: Search a text which contains "or". For example: X or C
 vector <int> searchOr (trieNode* root, string text) {
@@ -350,67 +326,51 @@ vector <int> searchOr (trieNode* root, string text) {
     return res;
 
 }
-//
-//// Operator 2: Search a text which contains "or". For example: X or C.
-//vector <int> searchOr (trieNode* root, string text) {
-//    string tmp="";
-//    vector <string> split;
-//    vector <int> res,temp_res;
-//
-//    for (int i=0;i<text.length();i++) {
-//        if (text[i]==' ') {
-//            if (tmp!="or") split.push_back(tmp);
-//            tmp="";
-//        } else tmp+=text[i];
-//    }
-//    res=searchTextfromVector(root,split);
-//    return res;
-//}
 
 // Operator 3: Search a text which do not contain a word. For example: Manchester -united
 // It will search all the document which contain "Manchester" and do not contain "united"
-//vector <int> searchWithoutaWord(trieNode* root, string text) {
-//    string tmp="";
-//    vector <string> split;
-//    vector <int> res,temp_res,eliminate_doc;
-//    string word_eliminate="";
-//
-//    int i=0;
-//    while (i<text.length()-1) {
-//        if (text[i]==' ') {
-//            if (text[i+1]='-') {
-//                int j=i+2;
-//                while (text[j] != ' ') {
-//                    word_eliminate+=text[j];
-//                    j++;
-//                }
-//                i=j;
-//            } else {
-//                split.push_back(tmp);
-//                tmp="";
-//            }
-//        } else tmp+=text[i];
-//        i++;
-//    }
-//
-//    temp_res=searchTextfromVector(root,split);
-//    eliminate_doc=searchFullText(root,word_eliminate);
-//
-//    for (int k=0;k<temp_res.size();k++) {
-//        int flag=0;
-//
-//        for (int t=0;t<eliminate_doc.size();t++) {
-//            if (temp_res[k] == eliminate_doc[t]) {
-//                flag++;
-//                break;
-//            }
-//        }
-//
-//        if (flag==0) res.push_back(k);
-//    }
-//
-//    return res;
-//}
+vector <int> searchWithoutaWord(trieNode* root, string text) {
+    string tmp="";
+    vector <string> split;
+    vector <int> res,temp_res,eliminate_doc;
+    string word_eliminate="";
+
+    int i=0;
+    while (i<text.length()-1) {
+        if (text[i]==' ') {
+            if (text[i+1]='-') {
+                int j=i+2;
+                while (text[j] != ' ') {
+                    word_eliminate+=text[j];
+                    j++;
+                }
+                i=j;
+            } else {
+                split.push_back(tmp);
+                tmp="";
+            }
+        } else tmp+=text[i];
+        i++;
+    }
+
+    temp_res=searchTextfromVector(root,split);
+    eliminate_doc=searchFullText(root,word_eliminate);
+
+    for (int k=0;k<temp_res.size();k++) {
+        int flag=0;
+
+        for (int t=0;t<eliminate_doc.size();t++) {
+            if (temp_res[k] == eliminate_doc[t]) {
+                flag++;
+                break;
+            }
+        }
+
+        if (flag==0) res.push_back(k);
+    }
+
+    return res;
+}
 
 // Operator 4: Search for a title of a document. For example: intitle:hammer nails
 vector <int> searchTitle (trieNode* titleTrie, string text) {
@@ -443,8 +403,6 @@ vector<int> operator5(trieNode* root, string query, vector<string>docPath) {
 	}
 	return res;
 }
-
-// Operator 7: Search for a price. Put $ in front of a number. For example: $400
 
 //Operator 6: Search for a filetype. For example: filetype:txt + text search
 //should be at the first position of the string
@@ -482,7 +440,6 @@ vector <int> searchFiletype (trieNode* root, string text, vector <string> docPat
 }
 
 //Operator 7: Search for a price. Put $ in front of a number. For example: $400
-
 vector <int> searchForPrice(trieNode* root, string price) {
 	vector<int> res;
 	res = searchKeyword(root, price);
@@ -616,9 +573,14 @@ int compareNumber(string num1, string num2) {
 }
 
 // Check whether a number is already in vector.
-bool isInList(vector<int> list, int n) {
-	for (int i = 0; i < list.size(); i++)
-		if (n == list.at(i)) return true;
+bool isInList(vector<int> list, int x) {
+	int l = 0, r = list.size() - 1, mid;
+	while (l <= r) {
+		mid = (l + r) / 2;
+		if (list.at(mid) < x) l = mid + 1;
+		else if (list.at(mid) > x) r = mid - 1;
+		else return true;
+	}
 	return false;
 }
 

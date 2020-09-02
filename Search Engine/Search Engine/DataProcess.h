@@ -79,18 +79,14 @@ vector <int> searchWithoutaWord(trieNode* root, string text);
 // Operator 4
 vector <int> searchTitle (trieNode* titleTrie, string text);
 
-
 // Operator 5
 vector<int> operator5(trieNode* root, string query, vector<string>docPath);
 
 // Operator 7
+vector <int> searchForPrice(trieNode* root, string price);
 
 //Operator 6
 vector <int> searchFiletype (trieNode* root, string text, vector <string> docPath);
-
-//Operator 7
-
-vector <int> searchForPrice(trieNode* root, string price);
 
 // Operator 8
 vector <int> searchHashtag(trieNode* root, string hashtag);
