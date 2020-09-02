@@ -233,6 +233,10 @@ vector <int> searchFullText(trieNode* root, string text) {
 
     for (int i=0; i<text.length() ;i++) {
         if ( text[i]==' ' || i==text.length()-1) {
+            if (i==text.length()-1)
+                if (text[i] != ' ')
+                    tmp+=text[i];
+
             vector <int> doc_temp;
             doc_temp=searchKeyword(root,tmp);
 
@@ -252,6 +256,7 @@ vector <int> searchFullText(trieNode* root, string text) {
 
     return res;
 }
+
 
 //vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
 //    vector <int> res;
@@ -288,6 +293,62 @@ vector <int> searchAnd(trieNode* root, string query) {
 		}
 	}
 	return searchFullText(root, tem);
+}
+
+vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
+    vector <int> res;
+    vector <int> *_doc = new vector <int>[t.size()];
+    int count_doc_appear[12000];
+
+    for (int i=0;i<12000;i++) count_doc_appear[i]=0;
+
+    for (int i=0;i<t.size();i++)
+        _doc[i]=searchFullText(root,t[i]);
+
+    for (int i=0;i<t.size();i++) {
+        for (int j=0;j<_doc[i].size();j++)
+            count_doc_appear[j]++;
+    }
+
+    for (int i=0;i<12000;i++)
+        if (count_doc_appear[i]==t.size())
+            res.push_back(i);
+
+    delete[] _doc;
+
+    return res;
+}
+
+// ==========OPERATOR=============
+
+// Operator 2: Search a text which contains "or". For example: X or C
+vector <int> searchOr (trieNode* root, string text) {
+    string tmp="", check_or="";
+    vector <string> split;
+    vector <int> res,temp_res;
+
+    for (int i=0;i<text.length();i++) {
+        if (text[i]==' ' || i==text.length()-1) {
+            if (i==text.length()-1)
+                if (text[i] != ' ') {
+                    tmp+=text[i];
+                    check_or+=text[i];
+                }
+
+            if (check_or!="or") {
+                split.push_back(tmp);
+                tmp="";
+            }
+            check_or="";
+        } else {
+            tmp+=text[i];
+            check_or+=text[i];
+        }
+    }
+
+    res=searchTextfromVector(root,split);
+    return res;
+
 }
 //
 //// Operator 2: Search a text which contains "or". For example: X or C.
@@ -360,6 +421,7 @@ vector <int> searchTitle (trieNode* titleTrie, string text) {
     return res;
 }
 
+
 // Operator 5: +and operator.
 vector<int> operator5(trieNode* root, string query, vector<string>docPath) {
 	stringstream words(query);
@@ -383,6 +445,44 @@ vector<int> operator5(trieNode* root, string query, vector<string>docPath) {
 }
 
 // Operator 7: Search for a price. Put $ in front of a number. For example: $400
+
+//Operator 6: Search for a filetype. For example: filetype:txt + text search
+//should be at the first position of the string
+vector <int> searchFiletype (trieNode* root, string text, vector <string> docPath) {
+    vector <string> type;
+    vector <int> res,tmp_res;
+    string tmp="";
+    string new_text="";
+    int i=9;
+    while (text[i]!=' ') {
+        if (text[i+1]==' ' || text[i]==',') {
+            type.push_back(tmp);
+            tmp="";
+        } else {
+            tmp+=text[i];
+        }
+        i++;
+    }
+    i++;
+
+    for (int j=i;j<text.length();j++) new_text += text[j];
+    tmp_res=searchFullText(root,new_text);
+
+    for (int j=0;j<tmp_res.size();j++) {
+        string tmp_type=fileType(docPath[tmp_res[j]]);
+        for (int k=0;k<type.size();k++) {
+            if (tmp_type==type[k]) {
+                res.push_back(j);
+                break;
+            }
+        }
+    }
+
+    return res;
+}
+
+//Operator 7: Search for a price. Put $ in front of a number. For example: $400
+
 vector <int> searchForPrice(trieNode* root, string price) {
 	vector<int> res;
 	res = searchKeyword(root, price);
@@ -521,3 +621,20 @@ bool isInList(vector<int> list, int n) {
 		if (n == list.at(i)) return true;
 	return false;
 }
+
+string fileType (string doc_Path) {
+    int mark_point;
+    for (int i=doc_Path.length();i>=0;i--) {
+        if (doc_Path[i]=='.') {
+            mark_point=i+1;
+            break;
+        }
+    }
+    string res="";
+    for (int i=mark_point;i<doc_Path.length();i++) {
+        res+=doc_Path[i];
+    }
+    return res;
+}
+
+
