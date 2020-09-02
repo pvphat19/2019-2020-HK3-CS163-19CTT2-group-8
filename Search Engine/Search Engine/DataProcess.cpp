@@ -227,6 +227,10 @@ vector <int> searchFullText(trieNode* root, string text) {
 
     for (int i=0; i<text.length() ;i++) {
         if ( text[i]==' ' || i==text.length()-1) {
+            if (i==text.length()-1)
+                if (text[i] != ' ')
+                    tmp+=text[i];
+
             vector <int> doc_temp;
             doc_temp=searchKeyword(root,tmp);
 
@@ -249,7 +253,7 @@ vector <int> searchFullText(trieNode* root, string text) {
 
 vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
     vector <int> res;
-    vector <int> _doc[t.size()];
+    vector <int> *_doc = new vector <int>[t.size()];
     int count_doc_appear[12000];
 
     for (int i=0;i<12000;i++) count_doc_appear[i]=0;
@@ -266,6 +270,8 @@ vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
         if (count_doc_appear[i]==t.size())
             res.push_back(i);
 
+    delete[] _doc;
+
     return res;
 }
 
@@ -273,16 +279,29 @@ vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
 
 // Operator 2: Search a text which contains "or". For example: X or C
 vector <int> searchOr (trieNode* root, string text) {
-    string tmp="";
+    string tmp="", check_or="";
     vector <string> split;
     vector <int> res,temp_res;
 
     for (int i=0;i<text.length();i++) {
-        if (text[i]==' ') {
-            if (tmp!="or") split.push_back(tmp);
-            tmp="";
-        } else tmp+=text[i];
+        if (text[i]==' ' || i==text.length()-1) {
+            if (i==text.length()-1)
+                if (text[i] != ' ') {
+                    tmp+=text[i];
+                    check_or+=text[i];
+                }
+
+            if (check_or!="or") {
+                split.push_back(tmp);
+                tmp="";
+            }
+            check_or="";
+        } else {
+            tmp+=text[i];
+            check_or+=text[i];
+        }
     }
+
     res=searchTextfromVector(root,split);
     return res;
 }
