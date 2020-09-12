@@ -6,27 +6,42 @@ int main()
 	trieNode* titleTrie = initTrieNode();
 	vector<string> docPath;
 
-	docPath.push_back("Search Engine-Data/000.txt");
-	docPath.push_back("Search Engine-Data/1.txt");
-	docPath.push_back("Search Engine-Data/001.txt");
-	docPath.push_back("Search Engine-Data/2.txt");
-	docPath.push_back("Search Enginr-Data/004.txt");
-	docPath.push_back("Search Enginr-Data/003.txt");
-	docPath.push_back("Search Enginr-Data/002.txt");
-	docPath.push_back("Search Enginr-Data/006.txt");
-	docPath.push_back("Search Enginr-Data/008.txt");
-	docPath.push_back("Search Enginr-Data/007.txt");
+	buildDocPath(docPath);
+	//indexAllData(mainTrie, titleTrie, docPath);
 
-	indexAllData(mainTrie, titleTrie, docPath);
-	ofstream out;
+	//ifstream in;
+	//retrieve(mainTrie, in, "mainTrie.txt");
+	//retrieve(titleTrie, in, "titleTrie.txt");
+
+	/*ofstream out;
+	string word;  
 	out.open("mainTrie.txt");
-	string word;
 	saveTrieToFile(mainTrie, out, word);
 	out.close();
-	string query = "human bloodstream";
-	vector<int> docNum = searchFullText(mainTrie, query);
-	
+
+	out.open("titleTrie.txt");
+	saveTrieToFile(titleTrie, out, word);
+	out.close();*/
+
+	//string query = "san francisco";
+	//vector<int> docNum = searchAnd(mainTrie, query);
+	//cout << docNum.size();
+	//for (int i = 0; i < docNum.size(); i++) {
+	//	cout << docNum.at(i) << " ";
+	//}
+
+	/*userIndexNewDoc(mainTrie, titleTrie, docPath);
+
 	deleteWholeTrie(mainTrie);
-	deleteWholeTrie(titleTrie);
+	deleteWholeTrie(titleTrie);*/
+	//return 0;
+
+	trieNode2* queryTrie = initNode2();
+	retrieve2(queryTrie);
+	string query = "";
+	getInput(queryTrie, query);
+
+	deleteWholeTrie2(queryTrie);
 	return 0;
+
 }

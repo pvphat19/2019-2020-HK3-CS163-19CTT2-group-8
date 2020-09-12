@@ -148,6 +148,7 @@
     <ClInclude Include="QueryProcess.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="history.txt" />
     <Text Include="mainTrie.txt" />
     <Text Include="stopWords.txt" />
     <Text Include="titleTrie.txt" />

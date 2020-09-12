@@ -4,7 +4,7 @@
 #include "Function.h"
 
 // ========== TRIE IMPLEMENTION ==========
-const int SIZE = 39;
+const int SSIZE = 39;
       //a-z: 0-25
       //0-9: 26-35
       //'\'': 36
@@ -12,7 +12,7 @@ const int SIZE = 39;
       //'$': 38
 
 struct trieNode {
-	trieNode* children[SIZE];
+	trieNode* children[SSIZE];
 	bool isEndWord;
 	vector <int> documents;
 };
@@ -29,10 +29,6 @@ void saveTrieToFile(trieNode* root, ofstream& out, string word);
 
 // Read a trie from a text file.
 void retrieve(trieNode*& root, ifstream& in, string address);
-
-// Check whether a word is right or not.
-bool isWord(string word);
-
 
 
 
@@ -65,7 +61,6 @@ vector <int> searchFullText(trieNode* root, string text);
 vector <int> searchTextfromVector (trieNode* root, vector <string> t);
 
 
-
 // ============= OPERATOR =============
 // Operator 1
 vector <int> searchAnd(trieNode* root, string query);
@@ -77,7 +72,7 @@ vector <int> searchOr(trieNode* root, string text);
 vector <int> searchWithoutaWord(trieNode* root, string text);
 
 // Operator 4
-vector <int> searchTitle (trieNode* titleTrie, string text);
+vector <int> searchTitle(trieNode* titleTrie, string text);
 
 // Operator 5
 vector<int> operator5(trieNode* root, string query, vector<string>docPath);
@@ -86,7 +81,7 @@ vector<int> operator5(trieNode* root, string query, vector<string>docPath);
 vector <int> searchForPrice(trieNode* root, string price);
 
 //Operator 6
-vector <int> searchFiletype (trieNode* root, string text, vector <string> docPath);
+vector <int> searchFiletype(trieNode* root, string text, vector <string> docPath);
 
 // Operator 8
 vector <int> searchHashtag(trieNode* root, string hashtag);
@@ -100,20 +95,26 @@ vector <int> searchRangeOfNumber(trieNode* root, string range);
 
 
 
+
+
 // ============ SUPPORT FUNCTION ============
+// Check whether a number is in list or not.
+bool isInList(vector<int> list, int n);
+
+// Check whether a word is right or not.
+bool isWord(string word);
+
+// Remove punctuation.
+void removePunctuation(string& word);
 
 int compareNumber(string num1, string num2);
 
 void searchRange(trieNode* cur, vector<int> res, string num1, string num2, string currentNumber);
-
-bool isInList(vector<int> list, int n);
-
 
 string fileType(string doc_Path);
 
 
 
 // ============= OUTPUT =============
-
 
 #endif

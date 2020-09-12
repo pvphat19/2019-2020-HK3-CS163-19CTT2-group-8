@@ -6,7 +6,12 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <conio.h>
+#include <ctype.h>
+#include <cstdio>
+#include <windows.h>
 using namespace std;
+
 
 #include"DataProcess.h"
 #include"QueryProcess.h"

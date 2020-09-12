@@ -92,6 +92,7 @@ vector<int> queryType(string query) {
 	return res;
 }
 
+void autoComplete();
 
 // ========== SUPPORTING FUNCTION ==========
 // Turn a string to lowercase.
@@ -138,4 +139,167 @@ bool isExactlyMatch(int docNum, vector<string> docPath, string query) {
 		in.close();
 		return false;
 	}
+}
+
+// ============= HISTORY =============
+trieNode2* initNode2() {
+	trieNode2* root = new trieNode2;
+	for (int i = 0; i < 39; i++)
+		root->children[i] = nullptr;
+	root->isEndWord = false;
+	return root;
+}
+
+void insertToTrie2(trieNode2* root, string query) {
+	trieNode2* cur = root;
+	for (int i = 0; i < query.length(); i ++) {
+		int index;
+		if ('z' >= query[i] && query[i] >= 'a')
+			index = query[i] - 'a';
+		else if (query[i] == ' ')
+			index = 36;
+		else if (query[i] == '#')
+			index = 37;
+		else if (query[i] == '$')
+			index = 38;
+		else index = query[i] - '0' + 26;
+
+		if (!cur->children[index])
+			cur->children[index] = initNode2();
+
+		cur = cur->children[index];
+	}
+
+	cur->isEndWord = true;
+}
+
+void deleteWholeTrie2(trieNode2*& root) {
+	if (root == nullptr) return;
+	for (int i = 0; i < 39; i++)
+		deleteWholeTrie2(root->children[i]);
+	delete root;
+}
+
+// If current node has a child, return 0; else if all children are NULL, return 1. 
+bool isLastNode(trieNode2* root) {
+	for (int i = 0; i < 39; i++)
+		if (root->children[i])
+			return 0;
+	return 1;
+}
+
+// Print auto-suggestions.
+void suggestions(trieNode2* root, string prefix)
+{
+	// Found a string in Trie with the given prefix 
+	if (root->isEndWord) {
+		cout << prefix;
+		cout << endl;
+	}
+
+	// All children struct node pointers are NULL 
+	if (isLastNode(root))
+		return;
+
+	for (int i = 0; i < 39; i++) {
+		if (root->children[i]) {
+			// Append current character to prefix string 
+			if (i == 36) prefix.push_back(' ');
+			else if (i == 37) prefix.push_back('#');
+			else if (i == 38) prefix.push_back('$');
+			else if (i < 26) prefix.push_back(97 + i);
+			else prefix.push_back(i - 26 + 48);
+
+			// Recur over the rest 
+			suggestions(root->children[i], prefix);
+
+			// Back track
+			prefix.pop_back();
+		}
+	}
+}
+
+// Print suggestions for given query prefix. 
+int printAutoSuggestions(trieNode2* root, string query) {
+	trieNode2* cur = root;
+
+	// Check if prefix is present and find the node with 
+	// last character of given string. 
+	int i;
+	int n = query.length();
+	for (i = 0; i < n; i++)
+	{
+		int index;
+		if ('z' >= query[i] && query[i] >= 'a')
+			index = query[i] - 'a';
+		else if (query[i] == ' ')
+			index = 36;
+		else if (query[i] == '#')
+			index = 37;
+		else if (query[i] == '$')
+			index = 38;
+		else index = query[i] - '0' + 26;
+
+		// If given string doesnot exist in the trie return 0.
+		if (!cur->children[index])
+			return 0;
+
+		cur = cur->children[index];
+	}
+
+	if (isLastNode(cur)) {
+		cout << query << endl;
+		return -1;
+	}
+
+	// If there are are nodes below last matching character. 
+	else {
+		string prefix = query;
+		suggestions(cur, prefix);
+		return 1;
+	}
+}
+
+void retrieve2(trieNode2* root) {
+	ifstream in;
+	in.open("history.txt");
+	if (in.is_open()) {
+		string query;
+		getline(in, query);
+		while (query.size()) {
+			insertToTrie2(root, query);
+			query = "";
+			getline(in, query);
+		}
+		in.close();
+	}
+}
+
+
+void getInput(trieNode2* history, string &query) {
+	char c;
+	cout << query;
+	for (int i = 0; i < 4; i++) {
+		c = _getch();
+		query += c;
+		cout << c;
+	}
+	cout << endl;
+	int t = printAutoSuggestions(history, query);
+	_getch();
+	while (c != '\r') {
+		system("cls");
+		cout << query;
+		c = _getch();
+		system("cls");
+		if (c == '\r') break;
+		if (c == '\b') {
+			query = query.substr(0, query.size() - 1);
+		}
+		else query += c;
+		cout << query << endl;
+		t = printAutoSuggestions(history, query);
+		if (t == 1) _getch();
+	}
+	if (t != 1 && t != -1) insertToTrie2(history, query);
 }
