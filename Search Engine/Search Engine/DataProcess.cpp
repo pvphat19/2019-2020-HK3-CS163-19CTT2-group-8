@@ -160,7 +160,7 @@ void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& d
 		tem += path[i];
 		i--;
 	}
-	
+
 	reverse(tem.begin(), tem.end());
 
 	// Move the file to the Search Engine-Data folder
@@ -311,27 +311,35 @@ vector <int> searchAnd(trieNode* root, string query) {
 vector <int> searchOr(trieNode* root, string text) {
 	string tmp = "", check_or = "";
 	vector <string> split;
-	vector <int> res, temp_res;
+	vector <int> res;
+    int index_or;
 
+    //check the position of "or"
 	for (int i = 0; i < text.length(); i++) {
 		if (text[i] == ' ' || i == text.length() - 1) {
 			if (i == text.length() - 1)
-				if (text[i] != ' ') {
-					tmp += text[i];
-					check_or += text[i];
-				}
+				if (text[i] != ' ')
+                    check_or += text[i];
 
-			if (check_or != "or") {
-				split.push_back(tmp);
-				tmp = "";
+			if (check_or == "or") {
+                index_or=i;
+                break;
 			}
 			check_or = "";
 		}
-		else {
-			tmp += text[i];
-			check_or += text[i];
-		}
+		else check_or += text[i];
 	}
+
+	//Left phrase of Or
+	for (int i=0;i<=index_or-4;i++) tmp+=text[i];
+
+    split.push_back(tmp);
+    tmp="";
+
+    //Right phrase of Or
+    for (int i=index_or+1;i<text.length();i++) tmp+=text[i];
+    split.push_back(tmp);
+    tmp="";
 
 	res = searchTextfromVector(root, split);
 	return res;
