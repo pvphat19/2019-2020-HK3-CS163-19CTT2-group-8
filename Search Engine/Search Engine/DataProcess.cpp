@@ -491,6 +491,18 @@ vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPat
 	return res;
 }
 
+//Operator 10: Search for wild cards or unknown words
+//Idea: remove the * character then perform searchFullText as usual
+vector<int> searchWildCards(trieNode* root, string query) {
+	string tmp = "";
+	int i = 0; 
+	while(i<(int)query.length()) {
+		if(query[i]=='*') i+=2;
+		else tmp+=query[i++];
+	}
+	return searchFullText(root, tmp);
+}
+
 // Operator 11: Search for a range of number. Put .. between two numbers. For example: $50..$100
 // range in form of: 100..200 or $100..$200, the smaller must be in front of the larger
 vector <int> searchRangeOfNumber(trieNode* root, string range) {
