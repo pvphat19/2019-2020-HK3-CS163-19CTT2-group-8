@@ -89,10 +89,14 @@ vector <int> searchHashtag(trieNode* root, string hashtag);
 // Operator 9
 vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPath);
 
+//Operator 10
+vector<int> searchWildCards(trieNode* root, string query);
+
 // Operator 11
 vector <int> searchRangeOfNumber(trieNode* root, string range);
 
-
+//Operator 12
+vector<int> searchSynonyms(trieNode* root, string query);
 
 
 
