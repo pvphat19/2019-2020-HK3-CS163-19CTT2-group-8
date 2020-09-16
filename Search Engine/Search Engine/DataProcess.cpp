@@ -563,6 +563,8 @@ vector <int> searchRangeOfNumber(trieNode* root, string range) {
 //a linear search on the content of that file
 //Assuming that the query entered has only one word
 vector<int> searchSynonyms(trieNode* root, string query) {
+	//remove the '~' character
+	query = query.substr(1, (int)query.length()-1);
 	vector<string> store;
 	vector<int> ret;
 	ifstream synonyms;
