@@ -558,6 +558,40 @@ vector <int> searchRangeOfNumber(trieNode* root, string range) {
 
 	return res;
 }
+//Operator 12: Search for synonyms
+//Idea: Use a pre-installed text file of synonyms and perform
+//a linear search on the content of that file
+//Assuming that the query entered has only one word
+vector<int> searchSynonyms(trieNode* root, string query) {
+	vector<string> store;
+	vector<int> ret;
+	ifstream synonyms;
+	synonyms.open("synonyms.txt");
+	if(!synonyms.is_open()) {
+		cout << "Cannot open synonyms.txt!\n";
+		return ret;
+	}
+	bool ok = 0;
+	while(!synonyms.eof()) {
+		vector<string> tmp(3, "");
+		synonyms>>tmp[0]>>tmp[1]>>tmp[2];
+		if(tmp[0]==query or tmp[1]==query or tmp[2]==query) {
+			synonyms.close();
+			store = tmp;
+			ok = 1;
+			break;
+		}
+	}
+	if(!ok) synonyms.close(), store.push_back(query); 
+
+	//store now stores all the synonyms together with that word
+	string newQuery = "";
+	for(int i=0; i<(int)store.size(); i++) {
+		if(i!=0) newQuery = newQuery+" "+store[i];
+		else newQuery = store[i];
+	}
+	return searchFullText(root, newQuery);
+}
 
 // ============ SUPPORTING FUNCTION ============
 
