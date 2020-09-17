@@ -505,6 +505,46 @@ vector<int> searchWildCards(trieNode* root, string query) {
 
 // Operator 11: Search for a range of number. Put .. between two numbers. For example: $50..$100
 // range in form of: 100..200 or $100..$200, the smaller must be in front of the larger
+vector <int> operator11(trieNode* root, string text) {
+	int count_doc_appear[12000] = { 0 }, count_words = 0;
+
+	string tmp = "";
+	vector <int> res;
+
+	for (int i = 0; i < text.length(); i++) {
+		if (text[i] == ' ' || i == text.length() - 1) {
+			if (i == text.length() - 1)
+				if (text[i] != ' ')
+					tmp += text[i];
+
+			vector <int> doc_temp;
+			//check if the word is in form of range
+			if (checkRange(tmp)) {
+				doc_temp = searchRangeOfNumber(root, tmp);
+			}
+			else {
+				//Ordinary words
+				doc_temp = searchKeyword(root, tmp);
+			}
+
+			for (int j = 0; j < doc_temp.size(); j++)
+				count_doc_appear[doc_temp[j]]++;
+
+			count_words++;
+			tmp = "";
+		}
+		else {
+			tmp += text[i];
+		}
+	}
+
+	for (int i = 0; i < 12000; i++)
+		if (count_doc_appear[i] == count_words)
+			res.push_back(i);
+
+	return res;
+}
+
 vector <int> searchRangeOfNumber(trieNode* root, string range) {
 	vector <int> res;
 
@@ -627,6 +667,42 @@ void removePunctuation(string& word) {
 	if (word[n] == ';' || word[n] == '.' || word[n] == ',' || word[n] == '?' || word[n] == '!') {
 		word.erase(n, 1);
 	}
+}
+
+// Check if a string is a range or not
+bool checkRange(string text) {
+	if (text[0] != '$') {
+		int count = 0;
+		for (int i = 0; i < text.size(); i) {
+			if ((text[i] < '0' || text[i]>'9') && text[i] != '.') return false;
+			if (text[i] == '.') {
+				if (count > 0) return false;
+				if (i + 1 > text.size() - 2) return false;
+				if (text[i + 1] != '.') return false;
+				if (text[i + 2] == '.') return false;
+				count++;
+				i++;
+			}
+			i++;
+		}
+	}
+	else {
+		int count = 0;
+		for (int i = 1; i < text.size(); i) {
+			if ((text[i] < '0' || text[i]>'9') && text[i] != '.') return false;
+			if (text[i] == '.') {
+				if (count > 0) return false;
+				if (i + 2 > text.size() - 2) return false;
+				if (text[i + 1] != '.') return false;
+				if (text[i + 2] != '$') return false;
+				if (text[i + 3] == '.' || text[i + 3] == '$') return false;
+				count++;
+				i += 2;
+			}
+			i++;
+		}
+	}
+	return true;
 }
 
 // Search range of number
