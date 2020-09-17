@@ -3,6 +3,17 @@
 
 #include "Function.h"
 
+string inputQuery();
+//void presentResult(trieNode* root, string query, vector <string> docPath);
+void  presentParagraph(string path, string query, int queryType);
+
+
+vector <string> searchSentence(ifstream& in, vector<string> queryWords);
+void searchOperator1(ifstream& in, string query);
+void searchOperator2(ifstream in, string query);
+void searchGeneral(ifstream in, string query);
+void searchOperator9(ifstream in, string query);
+bool checkSubstring(string str1, string str2);
 
 string removeSymbols(string query);
 string removeStopWords(string query);

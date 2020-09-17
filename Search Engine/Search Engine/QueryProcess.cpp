@@ -87,10 +87,240 @@ void presentResult(trieNode* root, string query, vector <string> docPath) {
 		cin >> choice;
 	}
 
-	//present the paragraph and highlight keywords
-
+	//present the paragraph and highlight keywords, not for operator 4, 6
+	string path = docPath[choice];
 
 }
+
+//present the paragraph
+void  presentParagraph(string path, string query, int queryType) {
+	ifstream in;
+	in.open(path);
+
+	if (!in.is_open()) {
+		cout << "can not open the file." << endl;
+		return;
+	}
+
+	if (queryType == 1) {
+
+	}
+	else if (queryType == 2) {
+
+	}
+	else if (queryType == 3) {
+
+	}
+	else if (queryType == 4) {
+
+	}
+	else if (queryType == 5) {
+
+	}
+	else if (queryType == 6) {
+
+	}
+	else if (queryType == 7) {
+
+	}
+	else if (queryType == 8) {
+
+	}
+	else if (queryType == 9) {
+
+	}
+	else if (queryType == 10) {
+
+	}
+	else if (queryType == 11) {
+
+	}
+	else {//operator 12
+
+	}
+
+}
+
+// ========== SUPPORTING FUNCTION ==========
+
+//Search in a document sentences that contain query words
+vector <string> searchSentence(ifstream& in, vector<string> queryWords) {
+	vector <string> res;//vector that holds the sentence containing query words
+
+	int n = queryWords.size();
+	bool* a = new bool[n];//check if the word is contained in the sentences or not
+	for (int i = 0; i < n; ++i) {
+		a[i] = false;
+	}
+
+	string prev = "";
+	string cur = "";
+	while (!in.eof()) {
+		getline(cin, cur, '.');
+		if (cur[0] == ' ') {
+			stringstream sentence(prev);
+			string tmpWord;
+			bool t = false;
+			while (sentence >> tmpWord) {
+				for (int i = 0; i < n; ++i) {
+					if (!a[i]) {
+						if (tmpWord == queryWords[i]) {
+							t = true;
+							a[i] = true;
+							break;
+						}
+					}
+				}
+			}
+			if (t == true) {
+				res.push_back(prev);
+			}
+			prev = cur;
+		}
+		else {
+			prev = prev + '.' + cur;
+		}
+	}
+	stringstream sentence(prev);
+	string tmpWord;
+	bool t = false;
+	while (sentence >> tmpWord) {
+		for (int i = 0; i < n; ++i) {
+			if (!a[i]) {
+				if (tmpWord == queryWords[i]) {
+					t = true;
+					a[i] = true;
+					break;
+				}
+			}
+		}
+	}
+	if (t == true) {
+		res.push_back(prev);
+	}
+	return res;
+}
+
+//Operator 1
+void searchOperator1(ifstream& in, string query) {
+
+	vector <string> res;//vector that holds the sentence containing query words
+
+	vector <string> queryWords; //vector that holds words of query
+
+	stringstream words(query);
+	string word;
+	string tem = "";
+	while (words >> word) {
+		if (word != "and") {
+			queryWords.push_back(word);
+		}
+	}
+
+	res = searchSentence(in, queryWords);
+
+	//Present result
+	for (int i = 0; i < res.size(); ++i) {
+		cout << res[i] << endl;
+	}
+}
+
+//Operator 2
+void searchOperator2(ifstream in, string query) {
+	vector <string> res;//vector that holds the sentence containing query words
+
+	vector <string> queryWords; //vector that holds words of query
+
+	stringstream words(query);
+	string word;
+	string tem = "";
+	while (words >> word) {
+		if (word != "or") {
+			queryWords.push_back(word);
+		}
+	}
+
+	res = searchSentence(in, queryWords);
+
+	//Present result
+	for (int i = 0; i < res.size(); ++i) {
+		cout << res[i] << endl;
+	}
+}
+
+//Used for operator 3, 5, 7, 8
+void searchGeneral(ifstream in, string query) {
+	vector <string> res;//vector that holds the sentence containing query words
+
+	vector <string> queryWords; //vector that holds words of query
+
+	stringstream words(query);
+	string word;
+	string tem = "";
+	while (words >> word) {
+		queryWords.push_back(word);
+	}
+
+	res = searchSentence(in, queryWords);
+
+	//Present result
+	for (int i = 0; i < res.size(); ++i) {
+		cout << res[i] << endl;
+	}
+}
+
+//Operator 9
+void searchOperator9(ifstream in, string query) {
+	string res = "";
+
+	string tem = "";
+	for (int i = 1; i < query.size() - 1; i++)
+		tem += query[i];
+
+	string prev = "";
+	string cur = "";
+	while (!in.eof()) {
+		getline(cin, cur, '.');
+		if (cur[0] == ' ') {
+			if (checkSubstring(prev, tem)) {
+				res = prev;
+				break;
+			}
+		}
+		else {
+			prev = prev + cur;
+		}
+	}
+	if (res == "") {
+		if (checkSubstring(prev, tem)) {
+			res = prev;
+		}
+	}
+
+	//present result
+	cout << res << endl;
+}
+//check if str2 is a substring of str1
+bool checkSubstring(string str1, string str2) {
+	for (int i = 0; i < str1.size() - 1 - str2.size(); ++i) {
+		bool t = true;
+		for (int j = 0; j < str2.size() - 1; ++j) {
+			if (str1[i + j] != str2[j]) {
+				t = false;
+				break;
+			}
+		}
+		if (t == true) return true;
+	}
+	return false;
+}
+
+//Operator 10
+
+//Operator 11
+
+//Operator 12
+
 
 // ===========STANDARDIZE QUERY===========
 
