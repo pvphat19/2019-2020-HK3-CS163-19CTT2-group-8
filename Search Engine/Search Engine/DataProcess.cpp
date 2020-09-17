@@ -462,16 +462,16 @@ vector <int> searchFiletype(trieNode* root, string text, vector <string> docPath
 }
 
 //Operator 7: Search for a price. Put $ in front of a number. For example: $400
-vector <int> searchForPrice(trieNode* root, string price) {
+vector <int> searchForPrice(trieNode* root, string query) {
 	vector<int> res;
-	res = searchKeyword(root, price);
+	res = searchFullText(root, query);
 	return res;
 }
 
 // Operator 8: Search hashtags. Put # in front of a word. For example: #helloworld
-vector <int> searchHashtag(trieNode* root, string hashtag) {
+vector <int> searchHashtag(trieNode* root, string query) {
 	vector<int> res;
-	res = searchKeyword(root, hashtag);
+	res = searchFullText(root, query);
 	return res;
 }
 
