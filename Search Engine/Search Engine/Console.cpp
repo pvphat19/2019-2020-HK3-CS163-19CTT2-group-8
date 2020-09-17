@@ -225,10 +225,10 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
     {
         c.clear();
         write_SE(c);
-        c.toLine(8).toCol(35).setForeColor(YELLOW).write("-MENU-");
-        c.toLine(10).toCol(8).setForeColor(WHITE).write("> 1. Index data");
-        c.toLine(11).toCol(10).setForeColor(WHITE).write("2. Search");
-        c.toLine(12).toCol(10).setForeColor(WHITE).write("3. Exit");
+        c.toLine(8).toCol(66).setForeColor(YELLOW).write("-MENU-");
+        c.toLine(10).toCol(39).setForeColor(WHITE).write("> 1. Index data");
+        c.toLine(11).toCol(41).setForeColor(WHITE).write("2. Search");
+        c.toLine(12).toCol(41).setForeColor(WHITE).write("3. Exit");
 
         int ch, cur = 0;
         bool fn,arrow;
@@ -239,15 +239,15 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
             {
                 if (ch==UP_ARROW)
                 {
-                    c.toLine(10 + cur).toCol(8).write(" ");
+                    c.toLine(10 + cur).toCol(39).write(" ");
                     cur = (cur + 2) % 3;
-                    c.toLine(10 + cur).toCol(8).setForeColor(LIGHT_YELLOW).write(">").toCol(8);
+                    c.toLine(10 + cur).toCol(39).setForeColor(LIGHT_YELLOW).write(">").toCol(39);
                 }
                 else if (ch==DOWN_ARROW)
                 {
-                    c.toLine(10 + cur).toCol(8).write(" ");
+                    c.toLine(10 + cur).toCol(39).write(" ");
                     cur = (cur + 1) % 3;
-                    c.toLine(10 + cur).toCol(8).setForeColor(LIGHT_YELLOW).write(">").toCol(8);
+                    c.toLine(10 + cur).toCol(39).setForeColor(LIGHT_YELLOW).write(">").toCol(39);
                 }
             }
             else
@@ -256,6 +256,7 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
                 {
                     if (cur==0)
                     {
+                        c.clear();
                         userIndexNewDoc(mainTrie, titleTrie, docPath);
                         break;
                     }
