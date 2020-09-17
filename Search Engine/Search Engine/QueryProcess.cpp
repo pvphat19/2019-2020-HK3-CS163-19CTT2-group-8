@@ -1,5 +1,99 @@
 #include "QueryProcess.h"
 
+//============INPUT QUERY================
+
+
+
+string inputQuery() {
+	cout << "Query: ";
+	string query;
+	getline(cin, query, '\n');
+	//history
+
+
+	//standardize the query
+	string tmp = removeSymbols(query);
+	query = removeStopWords(tmp);
+	return query;
+}
+
+void presentResult(trieNode* root, string query, vector <string> docPath) {
+	vector <int> queryTypes;
+	queryTypes = queryType(query);
+
+	vector<int> res;
+
+	for (int i = 0; i < queryTypes.size(); ++i) {
+		if (queryTypes[i] == 1) {
+			res = searchAnd(root, query);
+		}
+		else if (queryTypes[i] == 2) {
+			res = searchOr(root, query);
+		}
+		else if (queryTypes[i] == 3) {
+			res = searchWithoutaWord(root, query);
+		}
+		else if (queryTypes[i] == 4) {
+			res = searchTitle(root, query);
+		}
+		else if (queryTypes[i] == 5) {
+			res = operator5(root, query, docPath);
+
+		}
+		else if (queryTypes[i] == 6) {
+			res = searchFiletype(root, query, docPath);
+
+		}
+		else if (queryTypes[i] == 7) {
+			res = searchForPrice(root, query);
+		}
+		else if (queryTypes[i] == 8) {
+			res = searchHashtag(root, query);
+		}
+		else if (queryTypes[i] == 9) {
+			res = searchExactMatch(root, query, docPath);
+		}
+		else if (queryTypes[i] == 10) {
+
+		}
+		else if (queryTypes[i] == 11) {
+			res = searchRangeOfNumber(root, query);
+		}
+		else {//operator 12
+
+		}
+	}
+
+	//give out result
+	for (int i = 0; i < 5; ++i) {
+		if (i > res.size() - 1) break;
+		string docName = "";
+
+		int j = docPath[i].size() - 1;
+		while (j >= 0 && docPath[i][j] != '/') {
+			docName += docPath[i][j];
+			j--;
+		}
+
+		reverse(docName.begin(), docName.end());
+		cout << i + 1 << ". " << docName << endl;
+	}
+	//let the clients choose what to present
+	cout << "Enter the order of document you want to view result(0 for exit): ";
+	int choice;
+	cin >> choice;
+	while (choice < 0 || choice>5 || choice > res.size()) {
+		cout << "Please enter another number: ";
+		cin >> choice;
+	}
+
+	//present the paragraph and highlight keywords
+
+
+}
+
+// ===========STANDARDIZE QUERY===========
+
 //remove symbols and punctuation
 //not remove '.', '#', '$', '-', '+', '*', '~', '\'' and space
 string removeSymbols(string query) {
