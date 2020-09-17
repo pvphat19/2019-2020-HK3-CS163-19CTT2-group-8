@@ -93,6 +93,7 @@ vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPat
 vector<int> searchWildCards(trieNode* root, string query);
 
 // Operator 11
+vector <int> operator11(trieNode* root, string text);
 vector <int> searchRangeOfNumber(trieNode* root, string range);
 
 //Operator 12
@@ -110,6 +111,8 @@ bool isWord(string word);
 
 // Remove punctuation.
 void removePunctuation(string& word);
+
+bool checkRange(string text);
 
 int compareNumber(string num1, string num2);
 

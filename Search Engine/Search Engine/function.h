@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <iomanip>
+#include <algorithm>
 using namespace std;
 
 
@@ -25,6 +26,6 @@ class Console;
 
 
 
-#endif // 
+#endif //
 
 
