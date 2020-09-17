@@ -3,7 +3,6 @@
 //============INPUT QUERY================
 
 
-
 string inputQuery() {
 	cout << "Query: ";
 	string query;
@@ -78,7 +77,8 @@ void presentResult(trieNode* root, string query, vector <string> docPath) {
 		reverse(docName.begin(), docName.end());
 		cout << i + 1 << ". " << docName << endl;
 	}
-	//let the clients choose what to present
+	//let the clients choose what to present, not for operator 4, 6
+
 	cout << "Enter the order of document you want to view result(0 for exit): ";
 	int choice;
 	cin >> choice;
@@ -87,9 +87,9 @@ void presentResult(trieNode* root, string query, vector <string> docPath) {
 		cin >> choice;
 	}
 
-	//present the paragraph and highlight keywords, not for operator 4, 6
+	//present the paragraph and highlight keywords
 	string path = docPath[choice];
-
+	//presentParagraph(path, query, queryType);
 }
 
 //present the paragraph
@@ -103,37 +103,31 @@ void  presentParagraph(string path, string query, int queryType) {
 	}
 
 	if (queryType == 1) {
-
+		searchOperator1(in, query);
 	}
 	else if (queryType == 2) {
-
+		searchOperator2(in, query);
 	}
 	else if (queryType == 3) {
-
-	}
-	else if (queryType == 4) {
-
+		searchGeneral(in, query);
 	}
 	else if (queryType == 5) {
-
-	}
-	else if (queryType == 6) {
-
+		searchGeneral(in, query);
 	}
 	else if (queryType == 7) {
-
+		searchGeneral(in, query);
 	}
 	else if (queryType == 8) {
-
+		searchGeneral(in, query);
 	}
 	else if (queryType == 9) {
-
+		searchOperator9(in, query);
 	}
 	else if (queryType == 10) {
-
+		searchOperator10(in, query);
 	}
 	else if (queryType == 11) {
-
+		searchOperator11(in, query);
 	}
 	else {//operator 12
 
@@ -226,7 +220,7 @@ void searchOperator1(ifstream& in, string query) {
 }
 
 //Operator 2
-void searchOperator2(ifstream in, string query) {
+void searchOperator2(ifstream& in, string query) {
 	vector <string> res;//vector that holds the sentence containing query words
 
 	vector <string> queryWords; //vector that holds words of query
@@ -249,7 +243,7 @@ void searchOperator2(ifstream in, string query) {
 }
 
 //Used for operator 3, 5, 7, 8
-void searchGeneral(ifstream in, string query) {
+void searchGeneral(ifstream& in, string query) {
 	vector <string> res;//vector that holds the sentence containing query words
 
 	vector <string> queryWords; //vector that holds words of query
@@ -270,7 +264,7 @@ void searchGeneral(ifstream in, string query) {
 }
 
 //Operator 9
-void searchOperator9(ifstream in, string query) {
+void searchOperator9(ifstream& in, string query) {
 	string res = "";
 
 	string tem = "";
@@ -316,10 +310,193 @@ bool checkSubstring(string str1, string str2) {
 }
 
 //Operator 10
+void searchOperator10(ifstream& in, string query) {
+	vector <string> res;//vector that holds the sentence containing query words
+
+	vector <string> queryWords; //vector that holds words of query
+
+	stringstream words(query);
+	string word;
+	string tem = "";
+	int i = 0;
+	while (i < (int)query.length()) {
+		if (query[i] == '*') i += 2;
+		else tem += query[i++];
+	}
+	res = searchSentence(in, queryWords);
+
+	//Present result
+	for (int i = 0; i < res.size(); ++i) {
+		cout << res[i] << endl;
+	}
+}
 
 //Operator 11
+void searchOperator11(ifstream& in, string query) {
+	vector <string> res;//vector that holds the sentence containing query words
 
+	vector <string> queryWords; //vector that holds words of query
+	vector <string> range;
+
+	stringstream words(query);
+	string word;
+	string tem = "";
+	while (words >> word) {
+		if (!checkRange(word)) {
+			queryWords.push_back(word);
+		}
+		else {
+			range.push_back(word);
+		}
+	}
+
+	int n = queryWords.size();
+	bool* a = new bool[n];//check if the word is contained in the sentences or not
+	for (int i = 0; i < n; ++i) {
+		a[i] = false;
+	}
+
+	int m = range.size();
+	bool* b = new bool[m];
+	for (int i = 0; i < m; ++i) {
+		b[i] = false;
+	}
+
+	string prev = "";
+	string cur = "";
+	while (!in.eof()) {
+		getline(cin, cur, '.');
+		if (cur[0] == ' ') {
+			stringstream sentence(prev);
+			string tmpWord;
+			bool t = false;
+			while (sentence >> tmpWord) {
+				for (int i = 0; i < n; ++i) {
+					if (!a[i]) {
+						if (tmpWord == queryWords[i]) {
+							t = true;
+							a[i] = true;
+							break;
+						}
+					}
+				}
+				for (int i = 0; i < m; ++i) {
+					if (!b[i]) {
+						if (checkInRange(range[i], tmpWord)) {
+							t = true;
+							b[i] = true;
+							break;
+						}
+					}
+				}
+			}
+			if (t == true) {
+				res.push_back(prev);
+			}
+			prev = cur;
+		}
+		else {
+			prev = prev + '.' + cur;
+		}
+	}
+	stringstream sentence(prev);
+	string tmpWord;
+	bool t = false;
+	while (sentence >> tmpWord) {
+		for (int i = 0; i < n; ++i) {
+			if (!a[i]) {
+				if (tmpWord == queryWords[i]) {
+					t = true;
+					a[i] = true;
+					break;
+				}
+			}
+		}
+		for (int i = 0; i < m; ++i) {
+			if (!b[i]) {
+				if (checkInRange(range[i], tmpWord)) {
+					t = true;
+					b[i] = true;
+					break;
+				}
+			}
+		}
+	}
+	if (t == true) {
+		res.push_back(prev);
+	}
+
+	//Present result
+	for (int i = 0; i < res.size(); ++i) {
+		cout << res[i] << endl;
+	}
+}
+
+bool checkInRange(string range, string text) {
+
+	//check if the text is a number or not
+	string number;
+	if (text.size() == 0) return false;
+	if (text[0] == '$') {
+		for (int i = 1; i < text.size(); ++i) {
+			if ((text[i] < '0' || text[i]>'9') && text[i] != '.') return false;
+			number += text[i];
+		}
+	}
+	else {
+		for (int i = 0; i < text.size(); ++i) {
+			if ((text[i] < '0' || text[i]>'9') && text[i] != '.') return false;
+			number += text[i];
+		}
+	}
+
+	//check in range
+
+	string num1;
+	string num2;
+	if (range[0] == '$') {
+		if (text[0] != '$') return false;
+		int beginNum2 = 0;
+		for (int i = 1; i < range.size() - 1; ++i) {
+			if (range[i] == '.' && range[i + 1] == '.') {
+				beginNum2 = i;
+				break;
+			}
+			else {
+				num1 += range[i];
+			}
+		}
+		beginNum2 += 3;
+		for (int i = beginNum2; i < range.size(); ++i) {
+			num2 += range[i];
+		}
+
+	}
+	else {
+		if (text[0] == '$') return false;
+		int beginNum2 = 0;
+		for (int i = 0; i < range.size() - 1; ++i) {
+			if (range[i] == '.' && range[i + 1] == '.') {
+				beginNum2 = i;
+				break;
+			}
+			else {
+				num1 += range[i];
+			}
+		}
+		beginNum2 += 2;
+		for (int i = beginNum2; i < range.size(); ++i) {
+			num2 += range[i];
+		}
+
+	}
+
+	if (stof(number) > stof(num2)) return false;
+	if (stof(number) < stof(num1)) return false;
+	return true;
+}
 //Operator 12
+
 
 
 // ===========STANDARDIZE QUERY===========

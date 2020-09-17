@@ -10,10 +10,13 @@ void  presentParagraph(string path, string query, int queryType);
 
 vector <string> searchSentence(ifstream& in, vector<string> queryWords);
 void searchOperator1(ifstream& in, string query);
-void searchOperator2(ifstream in, string query);
-void searchGeneral(ifstream in, string query);
-void searchOperator9(ifstream in, string query);
+void searchOperator2(ifstream& in, string query);
+void searchGeneral(ifstream& in, string query);
+void searchOperator9(ifstream& in, string query);
 bool checkSubstring(string str1, string str2);
+void searchOperator10(ifstream& in, string query);
+void searchOperator11(ifstream& in, string query);
+bool checkInRange(string range, string text);
 
 string removeSymbols(string query);
 string removeStopWords(string query);
