@@ -151,6 +151,17 @@ void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& d
 	string path;
 	cin >> path;
 
+	// Confirm again.
+	cout << "Are you sure to index this document: " << path;
+	cout << "\n\tY/N?";
+	string choice;
+	cin >> choice;
+	toLower(choice);
+	if (choice != "y") {
+		cout << "Cancle indexing new document!";
+		return;
+	}
+
 	const char* oldPath = path.c_str();
 
 	// Take the name of path only.
