@@ -10,11 +10,17 @@
 #include <ctype.h>
 #include <cstdio>
 #include <windows.h>
+#include <exception>
+#include <stdexcept>
+#include <cstdlib>
+#include <iomanip>
 using namespace std;
 
 
 #include"DataProcess.h"
 #include"QueryProcess.h"
+#include"Console.h"
+class Console;
 
 
 

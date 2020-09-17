@@ -1,10 +1,10 @@
-#include <string>
-#include <exception>
-#include <stdexcept>
-#include <cstdio>
-#include <cstdlib>
-#include <windows.h>
-#include <conio.h>
+#ifndef _Console_h_
+#define _Console_h_
+
+#include "Function.h"
+struct trieNode;
+struct trieNode2;
+
 
 #define UP_ARROW     72
 #define DOWN_ARROW   80
@@ -66,6 +66,8 @@ int readkey (bool &fn, bool &arrow);
 
 void write_SE(Console &c);
 
-void SEARCH_GUI(Console &c);
+void SEARCH_GUI(Console &c, string query);
 
-void menu(Console &c);
+void menu(Console& c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* history, vector<string> docPath);
+
+#endif

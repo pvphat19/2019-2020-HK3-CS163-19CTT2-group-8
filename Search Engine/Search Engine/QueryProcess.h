@@ -3,6 +3,7 @@
 
 #include "Function.h"
 
+
 string removeSymbols(string query);
 string removeStopWords(string query);
 vector<int> queryType(string query);
@@ -37,14 +38,14 @@ void deleteWholeTrie2(trieNode2*& root);
 bool isLastNode(trieNode2* root);
 
 // Print auto-suggestions.
-void suggestions(trieNode2* root, string prefix);
+void suggestions(trieNode2* root, string prefix, Console &c, int &pos);
 
 // Print suggestions for given query prefix. 
-int printAutoSuggestions(trieNode2* root, string query);
+int printAutoSuggestions(trieNode2* root, string query, Console &c);
 
 void retrieve2(trieNode2* root);
 
-void getInput(trieNode2* history, string &query);
+void getInput(trieNode2* history, string& query, Console &con);
 
 
 #endif

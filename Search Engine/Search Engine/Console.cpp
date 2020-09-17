@@ -1,5 +1,6 @@
 #include "Console.h"
 
+
 void Console::setColorAttr()
 {
     size_t colorAttr = ((unsigned)backColor << 4) | (unsigned)foreColor;
@@ -188,36 +189,37 @@ int readkey (bool &fn, bool &arrow)
 
 void write_SE(Console &c)
 {
-    c.setForeColor(LIGHT_RED).toCol(1).toLine(2).write(" ___  ____    __    ____   ___  _   _    ____  _  _  ___  ____  _  _  ____ ")
-    .toCol(1).toLine(3).write("/ __)( ___)  /__\\  (  _ \\ / __)( )_( )  ( ___)( \\( )/ __)(_  _)( \\( )( ___)")
-    .toCol(1).toLine(4).write("\\__ \\ )__)  /(__)\\  )   /( (__  ) _ (    )__)  )  (( (_-. _)(_  )  (  )__) ")
-    .toCol(1).toLine(5).write("(___/(____)(__)(__)(_)\\_) \\___)(_) (_)  (____)(_)\\_)\\___/(____)(_)\\_)(____)");
+    c.setForeColor(LIGHT_RED).toCol(32).toLine(2).write(" ___  ____    __    ____   ___  _   _    ____  _  _  ___  ____  _  _  ____ ")
+    .toCol(32).toLine(3).write("/ __)( ___)  /__\\  (  _ \\ / __)( )_( )  ( ___)( \\( )/ __)(_  _)( \\( )( ___)")
+    .toCol(32).toLine(4).write("\\__ \\ )__)  /(__)\\  )   /( (__  ) _ (    )__)  )  (( (_-. _)(_  )  (  )__) ")
+    .toCol(32).toLine(5).write("(___/(____)(__)(__)(_)\\_) \\___)(_) (_)  (____)(_)\\_)\\___/(____)(_)\\_)(____)");
 }
 
 //Thieu doc query
-void SEARCH_GUI(Console &c)
+void SEARCH_GUI(Console &c, string query)
 {
     c.clear();
     write_SE(c);
 
-    c.toLine(8).toCol(32).setForeColor(LIGHT_AQUA).write("-SEARCH BOX-");
-    c.toLine(10).toCol(5).setForeColor(WHITE).write("|=================================================================|");
-    c.toLine(11).toCol(5).setForeColor(WHITE).write("|                                                                 |");
-    c.toLine(12).toCol(5).setForeColor(WHITE).write("|                                                                 |");
-    c.toLine(13).toCol(5).setForeColor(WHITE).write("|                                                                 |");
-    c.toLine(14).toCol(5).setForeColor(WHITE).write("|=================================================================|");
-
+    c.toLine(8).toCol(62).setForeColor(LIGHT_AQUA).write("-SEARCH BOX-");
+    c.toLine(10).toCol(37).setForeColor(WHITE).write("|=================================================================|");
+    c.toLine(11).toCol(37).setForeColor(WHITE).write("|");
+    c.toLine(11).toCol(39).setForeColor(WHITE).write(query);
+    c.toLine(11).toCol(103).setForeColor(WHITE).write("|");
+    c.toLine(12).toCol(37).setForeColor(WHITE).write("|                                                                 |");
+    c.toLine(13).toCol(37).setForeColor(WHITE).write("|=================================================================|");
+    c.setCursorPos(11, 39 + query.size());
     /*do {
 
     } while (); // Read String Here*/
 
 
-    c.pause(false); //Delete this line after writing do while loop above
+   //Delete this line after writing do while loop above
 
 }
 
 //Thieu INDEX DATA FUNCTION
-void menu(Console &c)
+void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* history, vector<string> docPath)
 {
     while (1)
     {
@@ -254,12 +256,13 @@ void menu(Console &c)
                 {
                     if (cur==0)
                     {
-                        //INDEX FUNCTION
+                        userIndexNewDoc(mainTrie, titleTrie, docPath);
                         break;
                     }
                     else if (cur==1)
                     {
-                        SEARCH_GUI(c);
+                        string query;
+                        getInput(history, query, c);
                         break;
                     }
                     else

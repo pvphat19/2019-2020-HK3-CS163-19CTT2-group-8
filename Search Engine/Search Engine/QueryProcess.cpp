@@ -188,13 +188,14 @@ bool isLastNode(trieNode2* root) {
 	return 1;
 }
 
-// Print auto-suggestions.
-void suggestions(trieNode2* root, string prefix)
+// Print auto-suggestions. (pos to save to position of cursor)
+void suggestions(trieNode2* root, string prefix, Console &c, int &pos)
 {
 	// Found a string in Trie with the given prefix 
 	if (root->isEndWord) {
+		c.setCursorPos(pos, 39);
 		cout << prefix;
-		cout << endl;
+		pos++;
 	}
 
 	// All children struct node pointers are NULL 
@@ -211,7 +212,7 @@ void suggestions(trieNode2* root, string prefix)
 			else prefix.push_back(i - 26 + 48);
 
 			// Recur over the rest 
-			suggestions(root->children[i], prefix);
+			suggestions(root->children[i], prefix, c, pos);
 
 			// Back track
 			prefix.pop_back();
@@ -220,7 +221,7 @@ void suggestions(trieNode2* root, string prefix)
 }
 
 // Print suggestions for given query prefix. 
-int printAutoSuggestions(trieNode2* root, string query) {
+int printAutoSuggestions(trieNode2* root, string query, Console &c) {
 	trieNode2* cur = root;
 
 	// Check if prefix is present and find the node with 
@@ -248,14 +249,15 @@ int printAutoSuggestions(trieNode2* root, string query) {
 	}
 
 	if (isLastNode(cur)) {
-		cout << query << endl;
+		
 		return -1;
 	}
 
 	// If there are are nodes below last matching character. 
 	else {
 		string prefix = query;
-		suggestions(cur, prefix);
+		int pos = 14;
+		suggestions(cur, prefix, c, pos);
 		return 1;
 	}
 }
@@ -276,30 +278,23 @@ void retrieve2(trieNode2* root) {
 }
 
 
-void getInput(trieNode2* history, string &query) {
-	char c;
-	cout << query;
-	for (int i = 0; i < 4; i++) {
-		c = _getch();
-		query += c;
-		cout << c;
-	}
-	cout << endl;
-	int t = printAutoSuggestions(history, query);
-	_getch();
-	while (c != '\r') {
+void getInput(trieNode2* history, string &query, Console &c) {
+	char ch;
+	SEARCH_GUI(c, query);
+	int t = 0;
+	ch=_getch();
+	while (ch != '\r') {
 		system("cls");
-		cout << query;
-		c = _getch();
-		system("cls");
-		if (c == '\r') break;
-		if (c == '\b') {
+		SEARCH_GUI(c, query);
+		if (ch == '\r') break;
+		if (ch == '\b') {
 			query = query.substr(0, query.size() - 1);
 		}
-		else query += c;
-		cout << query << endl;
-		t = printAutoSuggestions(history, query);
-		if (t == 1) _getch();
+		else query += ch;
+		SEARCH_GUI(c, query);
+		t = printAutoSuggestions(history, query, c);
+		if (t == 1) c.setCursorPos(11, 39 + query.size());
+		ch = _getch();
 	}
 	if (t != 1 && t != -1) insertToTrie2(history, query);
 }

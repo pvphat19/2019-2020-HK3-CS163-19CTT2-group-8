@@ -138,11 +138,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="DataProcess.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="QueryProcess.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Console.h" />
     <ClInclude Include="DataProcess.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="QueryProcess.h" />
