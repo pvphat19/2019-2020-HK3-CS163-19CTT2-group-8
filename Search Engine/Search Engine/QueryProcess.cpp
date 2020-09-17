@@ -267,6 +267,13 @@ void insertToTrie2(trieNode2* root, string query) {
 	cur->isEndWord = true;
 }
 
+bool isChar(char c) {
+	if ('z' >= c && c >= 'a') return true;
+	if (c ==' ' || c =='#' || c=='$' ) return true;
+	if (c >= 65 && c <= 90)return true;
+	return false;
+}
+
 void deleteWholeTrie2(trieNode2*& root) {
 	if (root == nullptr) return;
 	for (int i = 0; i < 39; i++)
@@ -283,11 +290,12 @@ bool isLastNode(trieNode2* root) {
 }
 
 // Print auto-suggestions. (pos to save to position of cursor)
-void suggestions(trieNode2* root, string prefix, Console &c, int &pos)
+void suggestions(trieNode2* root, string prefix, Console &c, int &pos, vector<string> & suggests)
 {
 	// Found a string in Trie with the given prefix 
 	if (root->isEndWord) {
 		c.setCursorPos(pos, 39);
+		suggests.push_back(prefix);
 		cout << prefix;
 		pos++;
 	}
@@ -306,7 +314,7 @@ void suggestions(trieNode2* root, string prefix, Console &c, int &pos)
 			else prefix.push_back(i - 26 + 48);
 
 			// Recur over the rest 
-			suggestions(root->children[i], prefix, c, pos);
+			suggestions(root->children[i], prefix, c, pos, suggests);
 
 			// Back track
 			prefix.pop_back();
@@ -315,7 +323,7 @@ void suggestions(trieNode2* root, string prefix, Console &c, int &pos)
 }
 
 // Print suggestions for given query prefix. 
-int printAutoSuggestions(trieNode2* root, string query, Console &c) {
+int printAutoSuggestions(trieNode2* root, string query, Console &c, vector<string> & suggests) {
 	trieNode2* cur = root;
 
 	// Check if prefix is present and find the node with 
@@ -351,7 +359,7 @@ int printAutoSuggestions(trieNode2* root, string query, Console &c) {
 	else {
 		string prefix = query;
 		int pos = 14;
-		suggestions(cur, prefix, c, pos);
+		suggestions(cur, prefix, c, pos, suggests);
 		return 1;
 	}
 }
@@ -377,6 +385,7 @@ void getInput(trieNode2* history, string &query, Console &c) {
 	SEARCH_GUI(c, query);
 	int t = 0;
 	ch=_getch();
+
 	while (ch != '\r') {
 		system("cls");
 		SEARCH_GUI(c, query);
@@ -384,11 +393,39 @@ void getInput(trieNode2* history, string &query, Console &c) {
 		if (ch == '\b') {
 			query = query.substr(0, query.size() - 1);
 		}
-		else query += ch;
+		else if (isChar(ch)) query += ch;
 		SEARCH_GUI(c, query);
-		t = printAutoSuggestions(history, query, c);
-		if (t == 1) c.setCursorPos(11, 39 + query.size());
-		ch = _getch();
+		vector <string> suggests;
+		toLower(query);
+		t = printAutoSuggestions(history, query, c, suggests);
+
+		if (t == 1) {
+			c.setCursorPos(11, 39 + query.size());
+			ch = _getch();
+			int i = -1;
+			while (ch == -32 && i < suggests.size() ) {
+				ch = _getch();
+				if (i == 0) break;
+				if (ch == 80) {
+					i++;
+				}
+				else if (ch == 72) {
+					i--;
+				}
+				c.setCursorPos(14 + i, 37);
+				cout << ">";
+				ch = _getch();
+				if (ch == '\r') {
+					query = suggests[i];
+					return;
+				}
+				// delete >
+				c.setCursorPos(14 + i, 37);
+				cout << " ";
+			}
+		}
+
+		else ch = _getch();
 	}
 	if (t != 1 && t != -1) insertToTrie2(history, query);
 }

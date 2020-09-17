@@ -38,10 +38,10 @@ void deleteWholeTrie2(trieNode2*& root);
 bool isLastNode(trieNode2* root);
 
 // Print auto-suggestions.
-void suggestions(trieNode2* root, string prefix, Console &c, int &pos);
+void suggestions(trieNode2* root, string prefix, Console &c, int &pos, vector <string> & suggests);
 
 // Print suggestions for given query prefix. 
-int printAutoSuggestions(trieNode2* root, string query, Console &c);
+int printAutoSuggestions(trieNode2* root, string query, Console &c, vector<string> & suggests);
 
 void retrieve2(trieNode2* root);
 

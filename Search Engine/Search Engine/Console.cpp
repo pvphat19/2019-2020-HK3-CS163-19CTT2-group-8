@@ -258,6 +258,7 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
                     {
                         c.clear();
                         userIndexNewDoc(mainTrie, titleTrie, docPath);
+                        system("PAUSE");
                         break;
                     }
                     else if (cur==1)

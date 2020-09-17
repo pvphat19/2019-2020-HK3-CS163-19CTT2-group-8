@@ -149,16 +149,24 @@ void indexTitle(trieNode* titleTrie, string path, int docnum) {
 void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& docPath) {
 	cout << "Please enter the path to document: \n\t";
 	string path;
-	cin >> path;
+	getline(cin, path);
 
 	// Confirm again.
 	cout << "Are you sure to index this document: " << path;
-	cout << "\n\tY/N?";
+	cout << "\n\tY/N?   ";
 	string choice;
 	cin >> choice;
 	toLower(choice);
 	if (choice != "y") {
-		cout << "Cancle indexing new document!";
+		cout << "\nCancle indexing new document!\n";
+		return;
+	}
+
+	// Check whether the path is valid or not.
+	ifstream in;
+	in.open("path");
+	if (!in) {
+		cout << "Error: Cannot find the given file!\n";
 		return;
 	}
 
@@ -195,7 +203,7 @@ void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& d
 	// Index its title to title trie.
 	indexTitle(titleTrie, newpath, docnum);
 
-	cout << "The document has been indexed successfully!";
+	cout << "The document has been indexed successfully!\n";
 }
 
 // Index all data.
