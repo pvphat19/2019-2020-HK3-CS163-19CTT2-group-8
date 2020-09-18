@@ -16,7 +16,7 @@ string inputQuery() {
 	return query;
 }
 
-void presentResult(trieNode* root, string query, vector <string> docPath) {
+void presentResult(trieNode* root, string query, vector <string> docPath, Console& c) {
 	vector <int> queryTypes;
 	queryTypes = queryType(query);
 
@@ -85,12 +85,28 @@ void presentResult(trieNode* root, string query, vector <string> docPath) {
 
 		//present the paragraph and highlight keywords
 		string path = docPath[choice];
-		presentParagraph(path, query, queryTypes[0]);
+		presentParagraph(path, query, queryTypes[0], c);
 	}
 }
 
 //present the paragraph
-void  presentParagraph(string path, string query, int queryType) {
+void  presentParagraph(string path, string query, int queryType, Console& c) {
+
+	c.clear();
+	int x = 1, y = 50;
+
+	string docName = "";
+
+	int j = path.size() - 1;
+	while (j >= 0 && path[j] != '/') {
+		docName += path[j];
+		j--;
+	}
+
+	reverse(docName.begin(), docName.end());
+
+	c.toLine(x).toCol(y).write(docName, true);
+
 	ifstream in;
 	in.open(path);
 
@@ -100,34 +116,34 @@ void  presentParagraph(string path, string query, int queryType) {
 	}
 
 	if (queryType == 1) {
-		searchOperator1(in, query);
+		searchOperator1(in, query, c);
 	}
 	else if (queryType == 2) {
-		searchOperator2(in, query);
+		searchOperator2(in, query, c);
 	}
 	else if (queryType == 3) {
-		searchGeneral(in, query);
+		searchGeneral(in, query, c);
 	}
 	else if (queryType == 5) {
-		searchGeneral(in, query);
+		searchGeneral(in, query, c);
 	}
 	else if (queryType == 7) {
-		searchGeneral(in, query);
+		searchGeneral(in, query, c);
 	}
 	else if (queryType == 8) {
-		searchGeneral(in, query);
+		searchGeneral(in, query, c);
 	}
 	else if (queryType == 9) {
-		searchOperator9(in, query);
+		searchOperator9(in, query, c);
 	}
 	else if (queryType == 10) {
-		searchOperator10(in, query);
+		searchOperator10(in, query, c);
 	}
 	else if (queryType == 11) {
-		searchOperator11(in, query);
+		searchOperator11(in, query, c);
 	}
 	else {//operator 12
-		searchOperator12(in, query);
+		searchOperator12(in, query, c);
 	}
 
 	in.close();
@@ -154,6 +170,7 @@ vector <string> searchSentence(ifstream& in, vector<string> queryWords) {
 			string tmpWord;
 			bool t = false;
 			while (sentence >> tmpWord) {
+				toLower(tmpWord);
 				for (int i = 0; i < n; ++i) {
 					if (!a[i]) {
 						if (tmpWord == queryWords[i]) {
@@ -179,6 +196,7 @@ vector <string> searchSentence(ifstream& in, vector<string> queryWords) {
 	while (sentence >> tmpWord) {
 		for (int i = 0; i < n; ++i) {
 			if (!a[i]) {
+				toLower(tmpWord);
 				if (tmpWord == queryWords[i]) {
 					t = true;
 					a[i] = true;
@@ -193,8 +211,39 @@ vector <string> searchSentence(ifstream& in, vector<string> queryWords) {
 	return res;
 }
 
+void print(vector<string> sentence, vector<string> queryWords, Console& c) {
+	int x = 3, y = 30;
+	for (int i = 0; i < sentence.size(); ++i) {
+		c.toLine(x).toCol(y);
+		stringstream words(sentence[i]);
+		string word = "";
+		while (words >> word) {
+			bool isQueryWord = false;
+			string tmp = word;
+			toLower(tmp);
+			while (tmp[tmp.size() - 1] < 48 || (tmp[tmp.size() - 1] > 57 && tmp[tmp.size() - 1] < 97) || tmp[tmp.size() - 1]>122) {
+				tmp.erase(tmp.size() - 1, 1);
+			}
+			for (int j = 0; j < queryWords.size(); ++j) {
+				if (tmp == queryWords[j]) {
+					c.setBackColor(YELLOW).write(word, true);
+					c.setBackColor(BLACK).write(" ", true);
+					isQueryWord = true;
+					break;
+				}
+			}
+			if (!isQueryWord) {
+				c.setBackColor(BLACK).write(word, true);
+				c.setBackColor(BLACK).write(" ", true);
+			}
+		}
+		c.setBackColor(BLACK).write("...", true);
+		x++;
+	}
+	c.toLine(x);
+}
 //Operator 1
-void searchOperator1(ifstream& in, string query) {
+void searchOperator1(ifstream& in, string query, Console& c) {
 
 	vector <string> res;//vector that holds the sentence containing query words
 
@@ -212,13 +261,11 @@ void searchOperator1(ifstream& in, string query) {
 	res = searchSentence(in, queryWords);
 
 	//Present result
-	for (int i = 0; i < res.size(); ++i) {
-		cout << res[i] << endl;
-	}
+	print(res, queryWords, c);
 }
 
 //Operator 2
-void searchOperator2(ifstream& in, string query) {
+void searchOperator2(ifstream& in, string query, Console& c) {
 	vector <string> res;//vector that holds the sentence containing query words
 
 	vector <string> queryWords; //vector that holds words of query
@@ -235,13 +282,11 @@ void searchOperator2(ifstream& in, string query) {
 	res = searchSentence(in, queryWords);
 
 	//Present result
-	for (int i = 0; i < res.size(); ++i) {
-		cout << res[i] << endl;
-	}
+	print(res, queryWords, c);
 }
 
 //Used for operator 3, 5, 7, 8
-void searchGeneral(ifstream& in, string query) {
+void searchGeneral(ifstream& in, string query, Console& c) {
 	vector <string> res;//vector that holds the sentence containing query words
 
 	vector <string> queryWords; //vector that holds words of query
@@ -256,13 +301,14 @@ void searchGeneral(ifstream& in, string query) {
 	res = searchSentence(in, queryWords);
 
 	//Present result
-	for (int i = 0; i < res.size(); ++i) {
-		cout << res[i] << endl;
-	}
+	print(res, queryWords, c);
 }
 
 //Operator 9
-void searchOperator9(ifstream& in, string query) {
+void searchOperator9(ifstream& in, string query, Console& c) {
+
+	int x = 3, y = 30;
+	c.clear();
 	string res = "";
 
 	string tem = "";
@@ -271,10 +317,15 @@ void searchOperator9(ifstream& in, string query) {
 
 	string prev = "";
 	string cur = "";
-	while (!in.eof()) {
+
+	int index = -1;
+	while (!in.eof() || res != "") {
 		getline(cin, cur, '.');
 		if (cur[0] == ' ') {
-			if (checkSubstring(prev, tem)) {
+			string tmp = prev;
+			toLower(tmp);
+			index = checkSubstring(tmp, tem);
+			if (index != -1) {
 				res = prev;
 				break;
 			}
@@ -284,31 +335,40 @@ void searchOperator9(ifstream& in, string query) {
 		}
 	}
 	if (res == "") {
-		if (checkSubstring(prev, tem)) {
+		string tmp = prev;
+		toLower(tmp);
+		index = checkSubstring(tmp, tem);
+		if (index != -1) {
 			res = prev;
 		}
 	}
 
 	//present result
-	cout << res << endl;
+	c.toLine(x).toCol(y);
+	c.setBackColor(BLACK).write(res, true);
+	y += index;// chua ro
+	c.setBackColor(YELLOW).write(tem, true);
+	x++;
+	y = 30;
+	c.toLine(x).toCol(y);
 }
 //check if str2 is a substring of str1
-bool checkSubstring(string str1, string str2) {
+int checkSubstring(string str1, string str2) {
 	for (int i = 0; i < str1.size() - 1 - str2.size(); ++i) {
-		bool t = true;
+		int t = i;
 		for (int j = 0; j < str2.size() - 1; ++j) {
 			if (str1[i + j] != str2[j]) {
-				t = false;
+				t = -1;
 				break;
 			}
 		}
-		if (t == true) return true;
+		if (t >= 0) return i;
 	}
-	return false;
+	return -1;
 }
 
 //Operator 10
-void searchOperator10(ifstream& in, string query) {
+void searchOperator10(ifstream& in, string query, Console& c) {
 	vector <string> res;//vector that holds the sentence containing query words
 
 	vector <string> queryWords; //vector that holds words of query
@@ -324,13 +384,14 @@ void searchOperator10(ifstream& in, string query) {
 	res = searchSentence(in, queryWords);
 
 	//Present result
-	for (int i = 0; i < res.size(); ++i) {
-		cout << res[i] << endl;
-	}
+	print(res, queryWords, c);
 }
 
 //Operator 11
-void searchOperator11(ifstream& in, string query) {
+void searchOperator11(ifstream& in, string query, Console& c) {
+
+	c.clear();
+	int x = 3, y = 30;
 	vector <string> res;//vector that holds the sentence containing query words
 
 	vector <string> queryWords; //vector that holds words of query
@@ -369,6 +430,7 @@ void searchOperator11(ifstream& in, string query) {
 			string tmpWord;
 			bool t = false;
 			while (sentence >> tmpWord) {
+				toLower(tmpWord);
 				for (int i = 0; i < n; ++i) {
 					if (!a[i]) {
 						if (tmpWord == queryWords[i]) {
@@ -401,6 +463,7 @@ void searchOperator11(ifstream& in, string query) {
 	string tmpWord;
 	bool t = false;
 	while (sentence >> tmpWord) {
+		toLower(tmpWord);
 		for (int i = 0; i < n; ++i) {
 			if (!a[i]) {
 				if (tmpWord == queryWords[i]) {
@@ -426,8 +489,41 @@ void searchOperator11(ifstream& in, string query) {
 
 	//Present result
 	for (int i = 0; i < res.size(); ++i) {
-		cout << res[i] << endl;
+		c.toLine(x).toCol(y);
+		stringstream words(res[i]);
+		string word = "";
+		while (words >> word) {
+			bool isQueryWord = false;
+			string tmp = word;
+			toLower(tmp);
+			while (tmp[tmp.size() - 1] < 48 || (tmp[tmp.size() - 1] > 57 && tmp[tmp.size() - 1] < 97) || tmp[tmp.size() - 1]>122) {
+				tmp.erase(tmp.size() - 1, 1);
+			}
+			for (int j = 0; j < queryWords.size(); ++j) {
+				if (tmp == queryWords[j]) {
+					c.setBackColor(YELLOW).write(word, true);
+					c.setBackColor(BLACK).write(" ", true);
+					isQueryWord = true;
+					break;
+				}
+			}
+			for (int j = 0; j < range.size(); ++j) {
+				if (checkInRange(range[j], tmp)) {
+					c.setBackColor(YELLOW).write(word, true);
+					c.setBackColor(BLACK).write(" ", true);
+					isQueryWord = true;
+					break;
+				}
+			}
+			if (!isQueryWord) {
+				c.setBackColor(BLACK).write(word, true);
+				c.setBackColor(BLACK).write(" ", true);
+			}
+		}
+		c.setBackColor(BLACK).write("...", true);
+		x++;
 	}
+	c.toLine(x);
 }
 
 bool checkInRange(string range, string text) {
@@ -494,7 +590,7 @@ bool checkInRange(string range, string text) {
 	return true;
 }
 //Operator 12
-void searchOperator12(ifstream& in, string query) {
+void searchOperator12(ifstream& in, string query, Console& c) {
 	//remove the '~' character
 	query = query.substr(1, (int)query.length() - 1);
 
@@ -538,11 +634,8 @@ void searchOperator12(ifstream& in, string query) {
 	res = searchSentence(in, queryWords);
 
 	//Present result
-	for (int i = 0; i < res.size(); ++i) {
-		cout << res[i] << endl;
-	}
+	print(res, queryWords, c);
 }
-
 // ===========STANDARDIZE QUERY===========
 
 //remove symbols and punctuation
