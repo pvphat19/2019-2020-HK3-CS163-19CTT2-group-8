@@ -8,11 +8,11 @@ int main()
 
 	
 	buildDocPath(docPath);
-	indexAllData(mainTrie, titleTrie, docPath);
+	//indexAllData(mainTrie, titleTrie, docPath);
 
-	/*ifstream in;
+	ifstream in;
 	retrieve(mainTrie, in, "mainTrie.txt");
-	retrieve(titleTrie, in, "titleTrie.txt");*/
+	retrieve(titleTrie, in, "titleTrie.txt");
 
 	/*ofstream out;
 	string word;  
@@ -33,19 +33,23 @@ int main()
 
 	userIndexNewDoc(mainTrie, titleTrie, docPath);*/
 
-	/*deleteWholeTrie(mainTrie);
-	deleteWholeTrie(titleTrie);
-	return 0;*/
+	
 
 	trieNode2* queryTrie = initNode2();
 	retrieve2(queryTrie);
 	
-	Console c;
+	/*Console c;
 	string query = "";
 	menu(c, mainTrie, titleTrie, queryTrie, docPath);
+*/
+
+
 
 	deleteWholeTrie2(queryTrie);
-	return 0;
+	
 
+	deleteWholeTrie(mainTrie);
+	deleteWholeTrie(titleTrie);
+	return 0;
 	
 }

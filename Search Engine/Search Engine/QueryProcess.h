@@ -39,7 +39,7 @@ bool isExactlyMatch(int docNum, vector<string> docPath, string query);
 
 // ============= HISTORY =============
 struct trieNode2 {
-	trieNode2* children[39];
+	trieNode2* children[47];
 	bool isEndWord;
 };
 
