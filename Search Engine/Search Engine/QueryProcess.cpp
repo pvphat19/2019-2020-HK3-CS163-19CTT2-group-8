@@ -81,7 +81,7 @@ void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <st
 		}
 	}
 	else if (queryTypes[0] == 9) {
-		for (int i = 0; i < 5 && i < res.size() ; ++i) {
+		for (int i = 0; i < 5 && i < res.size(); ++i) {
 			if (i > res.size() - 1) break;
 			string docName = "";
 
@@ -95,11 +95,34 @@ void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <st
 		}
 	}
 	else if (queryTypes[0] == 4) {
-		// day nha phat
+		for (int i = 0; i < 5 && i < res.size(); ++i) {
+			if (i > res.size() - 1) break;
+			string docName = "";
+
+			docName = docPath[res[i]];
+
+			string stt = to_string(i + 1);
+			c.setForeColor(YELLOW).setBackColor(BLACK).write(stt + ". " + docName, false);
+			cout << endl;
+			printTitle(query, docName, c);
+			cout << endl << endl;
+		}
 	}
 	else if (queryTypes[0] == 11) {
-		// day nha phat
+		for (int i = 0; i < 5 && i < res.size(); ++i) {
+			if (i > res.size() - 1) break;
+			string docName = "";
+
+			docName = docPath[res[i]];
+
+			string stt = to_string(i + 1);
+			c.setForeColor(YELLOW).setBackColor(BLACK).write(stt + ". " + docName, false);
+			cout << endl;
+			printRange(query, docName, c);
+			cout << endl << endl;
+		}
 	}
+	else return;
 
 	// let the clients choose the document
 	c.setBackColor(BLACK).setForeColor(WHITE).write("\n\nPlease enter the document you want to view (1->5): ", false);
