@@ -128,6 +128,10 @@ void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <st
 	c.setBackColor(BLACK).setForeColor(WHITE).write("\n\nPlease enter the document you want to view (1->5): ", false);
 	int choice;
 	cin >> choice;
+	while (choice<1 || choice>res.size() || choice > 5) {
+		c.setBackColor(BLACK).setForeColor(WHITE).write("\n\nError. Please enter again: ", false);
+		cin >> choice;
+	}
 	cout << endl;
 	printDocument(docPath[res[choice - 1]]);
 }
