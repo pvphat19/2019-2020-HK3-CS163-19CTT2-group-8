@@ -508,7 +508,7 @@ vector <int> searchHashtag(trieNode* root, string query) {
 }
 
 // Operator 9: Search for an exact match.
-vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPath) {
+vector<int> searchExactMatch(trieNode* root, string &query, vector<string> docPath) {
 	string tem = "";
 	for (int i = 1; i < query.size() - 1; i++)
 		tem += query[i];
@@ -520,6 +520,7 @@ vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPat
 		}
 		if (i == 5) break;
 	}
+	query = tem;
 	return res;
 }
 

@@ -4,22 +4,7 @@
 #include "Function.h"
 
 string inputQuery();
-//void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <string> docPath, Console& c);
-void presentParagraph(string path, string query, int queryType, Console& c);
-
-
-vector <string> searchSentence(ifstream& in, vector<string> queryWords);
-void searchOperator1(ifstream& in, string query, Console& c);
-void searchOperator2(ifstream& in, string query, Console& c);
-void searchGeneral(ifstream& in, string query, Console& c);
-void searchOperator9(ifstream& in, string query, Console& c);
-int checkSubstring(string str1, string str2);
-void searchOperator10(ifstream& in, string query, Console& c);
-void searchOperator11(ifstream& in, string query, Console& c);
-bool checkInRange(string range, string text);
-void searchOperator12(ifstream& in, string query, Console& c);
-
-void print(vector<string> sentence, vector<string> queryWords, Console& c);
+void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <string> docPath, Console& c);
 
 string removeSymbols(string query);
 string removeStopWords(string query);
@@ -64,9 +49,10 @@ void retrieve2(trieNode2* root);
 
 void getInput(trieNode2* history, string& query, Console &con);
 
-
+void printDocument(string docPath);
 
 void printGeneral(string query, string docPath, Console& c);
+
 void printQueryMatch(string query, string docPath, Console& c);
 
 #endif

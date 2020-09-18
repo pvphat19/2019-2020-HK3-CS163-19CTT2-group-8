@@ -63,7 +63,7 @@ int main()
 	Console c;
 	string query = "posing as crew";
 	string docPath = "Search Engine-Data/000.txt";
-	printQueryMatch(query, docPath, c);
+	printDocument(docPath);
 
 	return 0;
 	

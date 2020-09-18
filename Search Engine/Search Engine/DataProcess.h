@@ -63,34 +63,34 @@ vector <int> searchTextfromVector (trieNode* root, vector <string> t);
 
 // ============= OPERATOR =============
 // Operator 1
-vector <int> searchAnd(trieNode* root, string query);
+vector <int> searchAnd(trieNode* root, string &query);
 
 // Operator 2
-vector <int> searchOr(trieNode* root, string text);
+vector <int> searchOr(trieNode* root, string & text);
 
 // Operator 3
-vector <int> searchWithoutaWord(trieNode* root, string text);
+vector <int> searchWithoutaWord(trieNode* root, string &text);
 
 // Operator 4
-vector <int> searchTitle(trieNode* titleTrie, string text);
+vector <int> searchTitle(trieNode* titleTrie, string &text);
 
 // Operator 5
-vector<int> operator5(trieNode* root, string query, vector<string>docPath);
+vector<int> operator5(trieNode* root, string &query, vector<string>docPath);
 
 // Operator 7
 vector <int> searchForPrice(trieNode* root, string price);
 
 //Operator 6
-vector <int> searchFiletype(trieNode* root, string text, vector <string> docPath);
+vector <int> searchFiletype(trieNode* root, string &text, vector <string> docPath);
 
 // Operator 8
 vector <int> searchHashtag(trieNode* root, string hashtag);
 
 // Operator 9
-vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPath);
+vector<int> searchExactMatch(trieNode* root, string &query, vector<string> docPath);
 
 //Operator 10
-vector<int> searchWildCards(trieNode* root, string query);
+vector<int> searchWildCards(trieNode* root, string &query);
 
 // Operator 11
 vector <int> operator11(trieNode* root, string text);
