@@ -674,12 +674,17 @@ vector<int> searchSynonyms(trieNode* root, string query) {
 	if (!ok) synonyms.close(), store.push_back(query);
 
 	//store now stores all the synonyms together with that word
-	string newQuery = "";
-	for (int i = 0; i < (int)store.size(); i++) {
-		if (i != 0) newQuery = newQuery + " " + store[i];
-		else newQuery = store[i];
-	}
-	return searchFullText(root, newQuery);
+	if((int)store.size()==1) return searchKeyword(root, store[0]);
+	
+	vector<int> ret1 = searchKeyword(root, store[0]);
+	vector<int> ret2 = searchKeyword(root, store[1]);
+	vector<int> ret3 = searchKeyword(root, store[2]);
+	set<int> Set;
+	for(int x:ret1) Set.insert(x);
+	for(int x:ret2) Set.insert(x);
+	for(int x:ret3) Set.insert(x);
+	for(int x:Set) ret.push_back(x);
+	return ret;
 }
 
 // ============ SUPPORTING FUNCTION ============
