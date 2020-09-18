@@ -804,3 +804,4 @@ string fileType(string doc_Path) {
 	}
 	return res;
 }
+

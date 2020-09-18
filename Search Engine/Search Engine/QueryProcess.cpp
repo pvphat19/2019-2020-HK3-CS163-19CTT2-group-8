@@ -630,3 +630,215 @@ void printQueryMatch(string query, string docPath, Console& c) {
 		in.close();
 	}
 }
+
+void printTitle(string query, string docPath, Console& c) {
+	ifstream in;
+	in.open(docPath);
+
+	if (in.is_open()) {
+		string title;
+		getline(in, title, '.');
+		string cur;
+		getline(in, cur, '.');
+		while (!in.eof() && cur[0] != ' ') {
+			title = title + cur;
+			getline(in, cur, '.');
+		}
+		vector <string> split;
+		stringstream st(query);
+		string tmp;
+		while (st >> tmp) {
+			split.push_back(tmp);
+		}
+
+
+		stringstream at(title);
+		while (at >> tmp) {
+			string tempWord = tmp;
+			toLower(tempWord);
+			while (tempWord[tempWord.size() - 1] < 48 || (tempWord[tempWord.size() - 1] > 57 && tempWord[tempWord.size() - 1] < 97) || tempWord[tempWord.size() - 1] > 122) {
+				tempWord.erase(tempWord.size() - 1, 1);
+			}
+			bool t = false;
+			for (int i = 0; i < split.size(); ++i) {
+				if (tempWord == split[i]) {
+					c.setBackColor(YELLOW).setForeColor(BLACK).write(tmp, false);
+					c.setBackColor(BLACK).setForeColor(WHITE).write(" ", false);
+					t = true;
+					break;
+				}
+			}
+			if (t == false) {
+				c.setBackColor(BLACK).setForeColor(WHITE).write(tmp + " ", false);
+			}
+		}
+
+		in.close();
+	}
+}
+
+void printRange(string query, string docPath, Console& c) {
+
+	vector <string> queryWords; //vector that holds words of query
+	string range;// vecor that holds range
+
+	stringstream words(query);
+	string word;
+	string tem = "";
+	while (words >> word) {
+		if (!checkRange(word)) {
+			queryWords.push_back(word);
+		}
+		else {
+			range = word;
+		}
+	}
+
+	ifstream in;
+	in.open(docPath);
+
+	bool* visited = new bool[queryWords.size()]{ false };
+	bool rangeVisited = false;
+
+	bool* printed = new bool[queryWords.size()]{ false };
+	bool rangePrinted = false;
+	if (in.is_open()) {
+		while (!in.eof()) {
+			string line;
+			getline(in, line, '.');
+
+			bool containKeyword = false;
+			stringstream st(line);
+			string tmp;
+			while (st >> tmp) {
+				string tempWord = tmp;
+				toLower(tempWord);
+				while (tempWord[tempWord.size() - 1] < 48 || (tempWord[tempWord.size() - 1] > 57 && tempWord[tempWord.size() - 1] < 97) || tempWord[tempWord.size() - 1] > 122) {
+					tempWord.erase(tempWord.size() - 1, 1);
+				}
+				for (int i = 0; i < queryWords.size(); ++i) {
+					if (visited[i] == 0 && tempWord == queryWords[i]) {
+						containKeyword = true;
+						visited[i]++;
+					}
+				}
+				if (rangeVisited == false && checkInRange(range, tempWord)) {
+					containKeyword = true;
+					rangeVisited = true;
+				}
+				if (containKeyword) break;
+			}
+			if (!containKeyword) continue;
+			stringstream at(line);
+			while (at >> tmp) {
+				string tempWord = tmp;
+				toLower(tempWord);
+				while (tempWord[tempWord.size() - 1] < 48 || (tempWord[tempWord.size() - 1] > 57 && tempWord[tempWord.size() - 1] < 97) || tempWord[tempWord.size() - 1] > 122) {
+					tempWord.erase(tempWord.size() - 1, 1);
+				}
+				bool isQueryWords = false;
+				for (int i = 0; i < queryWords.size(); ++i) {
+					if (tempWord == queryWords[i]) {
+						isQueryWords = true;
+						printed[i] = true;
+						break;
+					}
+				}
+				if (checkInRange(range, tempWord)) {
+					isQueryWords = true;
+				}
+				if (isQueryWords) {
+					c.setBackColor(YELLOW).setForeColor(BLACK).write(tmp, false);
+					c.setBackColor(BLACK).setForeColor(WHITE).write(" ", false);
+				}
+				else {
+					c.setBackColor(BLACK).setForeColor(WHITE).write(tmp + " ", false);
+				}
+				bool stop = true;
+				for (int i = 0; i < queryWords.size(); ++i) {
+					if (printed[i] == false) {
+						stop = false;
+						break;
+					}
+				}
+				if (stop == true) {
+					if (!rangeVisited) stop = false;
+				}
+				if (stop) {
+					delete[]visited;
+					delete[]printed;
+					return;
+				}
+			}
+		}
+
+		in.close();
+	}
+
+	delete[]visited;
+	delete[]printed;
+}
+
+bool checkInRange(string range, string text) {
+
+	//check if the text is a number or not
+	string number;
+	if (text.size() == 0) return false;
+	if (text[0] == '$') {
+		for (int i = 1; i < text.size(); ++i) {
+			if ((text[i] < '0' || text[i]>'9') && text[i] != '.') return false;
+			number += text[i];
+		}
+	}
+	else {
+		for (int i = 0; i < text.size(); ++i) {
+			if ((text[i] < '0' || text[i]>'9') && text[i] != '.') return false;
+			number += text[i];
+		}
+	}
+
+	//check in range
+
+	string num1;
+	string num2;
+	if (range[0] == '$') {
+		if (text[0] != '$') return false;
+		int beginNum2 = 0;
+		for (int i = 1; i < range.size() - 1; ++i) {
+			if (range[i] == '.' && range[i + 1] == '.') {
+				beginNum2 = i;
+				break;
+			}
+			else {
+				num1 += range[i];
+			}
+		}
+		beginNum2 += 3;
+		for (int i = beginNum2; i < range.size(); ++i) {
+			num2 += range[i];
+		}
+
+	}
+	else {
+		if (text[0] == '$') return false;
+		int beginNum2 = 0;
+		for (int i = 0; i < range.size() - 1; ++i) {
+			if (range[i] == '.' && range[i + 1] == '.') {
+				beginNum2 = i;
+				break;
+			}
+			else {
+				num1 += range[i];
+			}
+		}
+		beginNum2 += 2;
+		for (int i = beginNum2; i < range.size(); ++i) {
+			num2 += range[i];
+		}
+
+	}
+
+	if (stof(number) > stof(num2)) return false;
+	if (stof(number) < stof(num1)) return false;
+	return true;
+}
