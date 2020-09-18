@@ -2,7 +2,6 @@
 
 //============INPUT QUERY================
 
-
 string inputQuery() {
 	cout << "Query: ";
 	string query;
@@ -59,34 +58,55 @@ void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <st
 		res = searchSynonyms(root, query);
 	}
 
-	//give out result
+	// Give out result.
+	// if there is no document sastify:
+	if (res.size() == 0) {
+		cout << "Oops! Cannot find the documents contain your input!\n";
+		return;
+	}
+
+	c.setForeColor(BLUE).setBackColor(BLACK).write("\t\t\tTop results:\n\n", false);
 	if (queryTypes.size() == 0 || queryTypes[0] == 1 || queryTypes[0] == 2 || queryTypes[0] == 3
 		|| queryTypes[0] == 5 || queryTypes[0] == 6 || queryTypes[0] == 7 || queryTypes[0] == 8 || queryTypes[0] == 10) {
-		for (int i = 0; i < 5; ++i) {
+		for (int i = 0; i < 5 && i < res.size(); ++i) {
 			if (i > res.size() - 1) break;
 			string docName = "";
 			docName = docPath[res[i]];
-			cout << i + 1 << ". " << docName << endl;
+
+			string stt = to_string(i + 1);
+			c.setForeColor(GREEN).setBackColor(BLACK).write(stt + ". " + docName, false);
+			cout << endl;
 			printGeneral(query, docName, c);
+			cout << endl << endl;
 		}
 	}
 	else if (queryTypes[0] == 9) {
-		for (int i = 0; i < 5; ++i) {
+		for (int i = 0; i < 5 && i < res.size() ; ++i) {
 			if (i > res.size() - 1) break;
 			string docName = "";
 
 			docName = docPath[res[i]];
-			cout << i + 1 << ". " << docName << endl;
+
+			string stt = to_string(i + 1);
+			c.setForeColor(YELLOW).setBackColor(BLACK).write(stt + ". " + docName, false);
+			cout << endl;
 			printQueryMatch(query, docName, c);
+			cout << endl << endl;
 		}
+	}
+	else if (queryTypes[0] == 4) {
+		// day nha phat
+	}
+	else if (queryTypes[0] == 11) {
+		// day nha phat
 	}
 
 	// let the clients choose the document
-	cout << "\n\n Please enter the document you want to view (1->5): ";
+	c.setBackColor(BLACK).setForeColor(WHITE).write("\n\nPlease enter the document you want to view (1->5): ", false);
 	int choice;
 	cin >> choice;
+	cout << endl;
 	printDocument(docPath[res[choice - 1]]);
-
 }
 
 
@@ -182,12 +202,12 @@ string removeStopWords(string query) {
 vector<int> queryType(string query) {
 	//tra ve loai query tuong ung voi 12 loai cua thay
 	vector<int> res;
-	if (query.find("and") != string::npos) res.push_back(1);
-	if (query.find("or") != string::npos) res.push_back(2);
+	if (query.find(" and") != string::npos && query.find("+and") == string::npos) res.push_back(1);
+	if (query.find(" or") != string::npos) res.push_back(2);
 	if (query.find("-") != string::npos) res.push_back(3);
-	if (query.find("intittle:") == (size_t)0) res.push_back(4);
-	if (query.find("+") != string::npos) res.push_back(5);
-	if (query.find("filetype:") != string::npos) res.push_back(6);
+	if (query.find("intittle: ") == (size_t)0) res.push_back(4);
+	if (query.find(" +and") != string::npos) res.push_back(5);
+	if (query.find("filetype: ") != string::npos) res.push_back(6);
 	if (query.find("$") != string::npos) res.push_back(7);
 	if (query.find("#") != string::npos) res.push_back(8);
 	if (query.find("\"") != string::npos) res.push_back(9);
@@ -197,7 +217,6 @@ vector<int> queryType(string query) {
 	return res;
 }
 
-void autoComplete();
 
 // ========== SUPPORTING FUNCTION ==========
 // Turn a string to lowercase.
@@ -231,10 +250,12 @@ bool isExactlyMatch(int docNum, vector<string> docPath, string query) {
 		while (!in.eof()) {
 			string w;
 			in >> w;
+			toLower(w);
 			int flag = 0;
 			if (w == word[0]) {
 				for (int j = 1; j < i; j++) {
 					in >> w;
+					toLower(w);
 					if (w == word[j])
 						flag++;
 				}
@@ -303,6 +324,35 @@ bool isChar(char c) {
 	if (c >= '0' && c <= '9') return true;
 
 	return false;
+}
+
+void saveTrieToFile2(trieNode2* root, ofstream& out, string word) {
+	if (root == nullptr) return;
+	if (root->isEndWord) {
+		out << word << " ";
+		out << endl;
+	}
+	for (int i = 0; i < SSIZE; i++) {
+		if (root->children[i]) {
+			char c;
+			if (i == 36) c = ' ';
+			else if (i == 37) c='#';
+			else if (i == 38) c='$';
+			else if (i < 26) c= 97 + i;
+			else if (i == 39) c='+';
+			else if (i == 40) c=':';
+			else if (i == 41) c='.';
+			else if (i == 42) c='\'';
+			else if (i == 43) c='*';
+			else if (i == 44) c='-';
+			else if (i == 45) c='"';
+			else c=i - 26 + 48;
+			string tem = word;
+			word += c;
+			saveTrieToFile2(root->children[i], out, word);
+			word = tem;
+		}
+	}
 }
 
 void deleteWholeTrie2(trieNode2*& root) {
@@ -544,6 +594,7 @@ void printGeneral(string query, string docPath, Console& c) {
 				string word;
 				if (in >> word) {
 					line.push_back(word);
+					toLower(word);
 					for (int j = 0; j < split.size(); j++)
 						if (word == split[j] && visited[j]==false) {
 							lineNum.push_back(i);
@@ -587,9 +638,11 @@ void printGeneral(string query, string docPath, Console& c) {
 void printQueryMatch(string query, string docPath, Console& c) {
 	// count word in query
 	stringstream words(query);
+	vector<string> split;
 	string word;
 	int count = 0;
 	while (words >> word) {
+		split.push_back(word);
 		count++;
 	}
 
@@ -599,21 +652,30 @@ void printQueryMatch(string query, string docPath, Console& c) {
 		while (!in.eof()) {
 			vector <string> line;
 			int flag = false;
-			for (int i = 0; i < 9; i++) {
+			for (int i = 0; i < 15; i++) {
 				string word = "";
-				for (int j = 0; j < count; j++) {
-					string tem;
-					if (in >> tem)
-						word = word + tem + " ";
+				if (in >> word) {
+					toLower(word);
+					if (word == split[0]) {
+						for (int j = 0; j < count - 1; j++) {
+							string tem;
+							if (in >> tem) {
+								word = word + " " + tem;
+							}
+						}
+						
+						toLower(word);
+						line.push_back(word);
+					}
+					else line.push_back(word);
 				}
-				word.erase(word.size() - 1, 1);
-				line.push_back(word);
+				
 				if (word == query) flag = true;
 			}
 
 			if (flag) {
 				c.setBackColor(BLACK).setForeColor(WHITE).write("...", false);
-				for (int i = 0; i < 9; i++) {
+				for (int i = 0; i < 15; i++) {
 					if (line[i] == query) {
 						c.setBackColor(YELLOW).setForeColor(BLACK).write(line[i], false);
 						c.setBackColor(BLACK).setForeColor(WHITE).write(" ", false);

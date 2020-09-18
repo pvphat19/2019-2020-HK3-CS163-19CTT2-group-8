@@ -49,10 +49,10 @@
     <Text Include="mainTrie.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="titleTrie.txt">
+    <Text Include="history.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="history.txt">
+    <Text Include="titleTrie.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

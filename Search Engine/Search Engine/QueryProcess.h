@@ -3,6 +3,7 @@
 
 #include "Function.h"
 
+
 string inputQuery();
 void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <string> docPath, Console& c);
 
@@ -33,6 +34,8 @@ struct trieNode2 {
 trieNode2* initNode2();
 
 void insertToTrie2(trieNode2* root, string query);
+
+void saveTrieToFile2(trieNode2* root, ofstream& out, string word);
 
 void deleteWholeTrie2(trieNode2*& root);
 

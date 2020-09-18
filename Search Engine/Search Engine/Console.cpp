@@ -256,6 +256,9 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
                 {
                     if (cur==0)
                     {
+                       /* if (cin.rdbuf()) {
+                            cin.clear();
+                        }*/
                         c.clear();
                         userIndexNewDoc(mainTrie, titleTrie, docPath);
                         system("PAUSE");
@@ -263,8 +266,15 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
                     }
                     else if (cur==1)
                     {
+                       /* if (cin.rdbuf()) {
+                            cin.clear();
+                        }*/
                         string query;
                         getInput(history, query, c);
+                        removeStopWords(query);
+                        c.clear();
+                        presentResult(mainTrie, titleTrie, query, docPath, c);
+                        system("PAUSE");
                         break;
                     }
                     else

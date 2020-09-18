@@ -147,19 +147,19 @@ void indexTitle(trieNode* titleTrie, string path, int docnum) {
 
 // Get doc path from user and index it.
 void userIndexNewDoc (trieNode* mainTrie, trieNode* titleTrie, vector <string>& docPath) {
-	cout << "             INDEX NEW DOC\n";
-	cout<<"Please enter the path to document : \n\t";\
+	cout << "                                             INDEX NEW DOC\n";
+	cout<<"\t\t\t\tPlease enter the path to document : \n\t\t\t\t\t";\
 	string path;
 	getline(cin, path);
 
 	// Confirm again.
-	cout << "\nAre you sure to index this document:  " << path;
-	cout << "\n\t Y/N?   ";
+	cout << "\n\t\t\t\tAre you sure to index this document:  " << path;
+	cout << "\n\t\t\t\t\t Y/N?   ";
 	string choice;
 	getline(cin, choice);
 	toLower(choice);
 	if (choice != "y") {
-		cout << "\nCancle indexing new document!\n";
+		cout << "\n\t\t\t\tCancle indexing new document!\n";
 		return;
 	}
 
@@ -167,10 +167,10 @@ void userIndexNewDoc (trieNode* mainTrie, trieNode* titleTrie, vector <string>& 
 	ifstream in;
 	in.open(path);
 	if (!in) {
-		cout << "\nError: Cannot find the given file!\n";
+		cout << "\n\t\t\t\tError: Cannot find the given file!\n";
 		return;
 	}
-	else cout << "\nIndexing....";
+	else cout << "\n\t\t\t\tIndexing....";
 
 	const char* oldPath = path.c_str();
 
@@ -209,7 +209,8 @@ void userIndexNewDoc (trieNode* mainTrie, trieNode* titleTrie, vector <string>& 
 	// Index its title to title trie.
 	indexTitle(titleTrie, newpath, docnum);
 
-	cout << "\nThe document has been indexed successfully!\n";
+	cout << "\n\t\t\t\tThe document has been indexed successfully!\n";
+	cout << "\t\t\t\t";
 }
 
 // Index all data.
@@ -345,7 +346,7 @@ vector <int> searchOr(trieNode* root, string& text) {
 	vector <int> res;
 	int index_or;
 
-	//check the position of "or"
+	// check the position of "or"
 	for (int i = 0; i < text.length(); i++) {
 		if (text[i] == ' ' || i == text.length() - 1) {
 			if (i == text.length() - 1)
@@ -361,13 +362,13 @@ vector <int> searchOr(trieNode* root, string& text) {
 		else check_or += text[i];
 	}
 
-	//Left phrase of Or
+	// Left phrase of Or
 	for (int i = 0; i <= index_or - 4; i++) tmp += text[i];
 
 	split.push_back(tmp);
 	tmp = "";
 
-	//Right phrase of Or
+	// Right phrase of Or
 	for (int i = index_or + 1; i < text.length(); i++) tmp += text[i];
 	split.push_back(tmp);
 	tmp = "";
