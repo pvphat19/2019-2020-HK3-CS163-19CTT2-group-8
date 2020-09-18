@@ -6,15 +6,15 @@ int main()
 	trieNode* titleTrie = initTrieNode();
 	vector<string> docPath;
 
-	/*
+	
 	buildDocPath(docPath);
 	indexAllData(mainTrie, titleTrie, docPath);
 
-	ifstream in;
+	/*ifstream in;
 	retrieve(mainTrie, in, "mainTrie.txt");
-	retrieve(titleTrie, in, "titleTrie.txt");
+	retrieve(titleTrie, in, "titleTrie.txt");*/
 
-	ofstream out;
+	/*ofstream out;
 	string word;  
 	out.open("mainTrie.txt");
 	saveTrieToFile(mainTrie, out, word);
@@ -22,18 +22,18 @@ int main()
 
 	out.open("titleTrie.txt");
 	saveTrieToFile(titleTrie, out, word);
-	out.close();
+	out.close();*/
 
-	string query = "san francisco";
+	/*string query = "san francisco";
 	vector<int> docNum = searchAnd(mainTrie, query);
 	cout << docNum.size();
 	for (int i = 0; i < docNum.size(); i++) {
 		cout << docNum.at(i) << " ";
 	}
 
-	userIndexNewDoc(mainTrie, titleTrie, docPath);
+	userIndexNewDoc(mainTrie, titleTrie, docPath);*/
 
-	deleteWholeTrie(mainTrie);
+	/*deleteWholeTrie(mainTrie);
 	deleteWholeTrie(titleTrie);
 	return 0;*/
 

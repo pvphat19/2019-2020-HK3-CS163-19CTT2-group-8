@@ -631,28 +631,68 @@ void getInput(trieNode2* history, string &query, Console &c) {
 
 		if (t == 1) {
 			c.setCursorPos(11, 39 + query.size());
-			ch = _getch();
-			int i = -1;
-			while (ch == -32 && i < suggests.size() ) {
-				ch = _getch();
-				if (i == 0) break;
-				if (ch == 80) {
-					i++;
+			int k, cur = -1;
+			int line = suggests.size();
+			bool fn, arrow;
+			do {
+				k = readkey(fn, arrow);
+				if (arrow) {
+					if (k == UP_ARROW) {
+						if (cur == -1) break;
+						else {
+							// delete >
+							c.setCursorPos(14 + cur, 37);
+							cout << " ";
+
+							cur = cur - 1;
+							if (cur != -1) {
+								c.setCursorPos(14 + cur, 37);
+								cout << ">";
+							}
+							else c.setCursorPos(11, 39 + query.size());
+						}
+					}
+					else if (k == DOWN_ARROW) {
+						if (cur == line - 1) {
+							c.setCursorPos(14 + cur, 37);
+							cout << " ";
+							cur = -1;
+							c.setCursorPos(11, 39 + query.size());
+						}
+						else {
+							if (cur != -1) {
+								c.setCursorPos(14 + cur, 37);
+								cout << " ";
+							}
+							
+							cur = cur + 1;
+							if (cur == line) {
+								cur = -1;
+								c.setCursorPos(11, 39 + query.size());
+							}
+							else {
+								c.setCursorPos(14 + cur, 37);
+								cout << ">";
+							}
+						}
+					}
 				}
-				else if (ch == 72) {
-					i--;
+				else {
+					if (k == '\r') {
+						if (cur == -1) {
+							return;
+						}
+						else {
+							query = suggests[cur];
+							return;
+						}
+					}
+					else {
+						ch = (char)k;
+						break;
+					}
 				}
-				c.setCursorPos(14 + i, 37);
-				cout << ">";
-				ch = _getch();
-				if (ch == '\r') {
-					query = suggests[i];
-					return;
-				}
-				// delete >
-				c.setCursorPos(14 + i, 37);
-				cout << " ";
-			}
+			} while (1);
 		}
 
 		else ch = _getch();

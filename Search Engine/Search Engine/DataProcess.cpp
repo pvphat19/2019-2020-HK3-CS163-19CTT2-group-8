@@ -164,7 +164,7 @@ void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& d
 
 	// Check whether the path is valid or not.
 	ifstream in;
-	in.open("path");
+	in.open(path);
 	if (!in) {
 		cout << "Error: Cannot find the given file!\n";
 		return;
