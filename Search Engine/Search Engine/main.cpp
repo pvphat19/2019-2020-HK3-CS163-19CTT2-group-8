@@ -8,8 +8,17 @@ int main()
 	vector<string> docPath;
 
 
+
 	buildDocPath(docPath);
 	//indexAllData(mainTrie, titleTrie, docPath);
+
+	buildDocPath(docPath);
+	//indexAllData(mainTrie, titleTrie, docPath);
+
+	ifstream in;
+	retrieve(mainTrie, in, "mainTrie.txt");
+	retrieve(titleTrie, in, "titleTrie.txt");
+
 
 	/*ofstream out;
 	string word;
@@ -45,12 +54,20 @@ int main()
 	//userIndexNewDoc(mainTrie, titleTrie, docPath);
 
 
+
 	/*trieNode2* queryTrie = initNode2();
 	retrieve2(queryTrie);
 
 	Console c;
+
+	
+	/*Console c;
+
 	string query = "";
 	menu(c, mainTrie, titleTrie, queryTrie, docPath);
+*/
+
+
 
 
 
@@ -60,4 +77,12 @@ int main()
 	return 0;
 
 
+
+	deleteWholeTrie2(queryTrie);
+	
+
+	deleteWholeTrie(mainTrie);
+	deleteWholeTrie(titleTrie);
+	return 0;
+	
 }

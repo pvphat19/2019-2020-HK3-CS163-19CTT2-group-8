@@ -146,16 +146,17 @@ void indexTitle(trieNode* titleTrie, string path, int docnum) {
 }
 
 // Get doc path from user and index it.
-void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& docPath) {
-	cout << "Please enter the path to document: \n\t";
+void userIndexNewDoc (trieNode* mainTrie, trieNode* titleTrie, vector <string>& docPath) {
+	cout << "             INDEX NEW DOC\n";
+	cout<<"Please enter the path to document : \n\t";\
 	string path;
 	getline(cin, path);
 
 	// Confirm again.
-	cout << "Are you sure to index this document: " << path;
-	cout << "\n\tY/N?   ";
+	cout << "\nAre you sure to index this document:  " << path;
+	cout << "\n\t Y/N?   ";
 	string choice;
-	cin >> choice;
+	getline(cin, choice);
 	toLower(choice);
 	if (choice != "y") {
 		cout << "\nCancle indexing new document!\n";
@@ -166,9 +167,10 @@ void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& d
 	ifstream in;
 	in.open(path);
 	if (!in) {
-		cout << "Error: Cannot find the given file!\n";
+		cout << "\nError: Cannot find the given file!\n";
 		return;
 	}
+	else cout << "\nIndexing....";
 
 	const char* oldPath = path.c_str();
 
@@ -179,14 +181,18 @@ void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& d
 		tem += path[i];
 		i--;
 	}
-
 	reverse(tem.begin(), tem.end());
 
 	// Move the file to the Search Engine-Data folder
 	string newpath = "Search Engine-Data/" + tem;
-	const char* newPath = newpath.c_str();
-	rename(oldPath, newPath);
+	/*const char* newPath = newpath.c_str();
+	if (rename(oldPath, newPath)) cout << "ok";*/
+	std::ifstream inn(oldPath, std::ios::in | std::ios::binary);
+	std::ofstream outt(newpath, std::ios::out | std::ios::binary);
+	outt << inn.rdbuf();
+	std::remove(oldPath);
 
+	
 	// Add document path to file "__index.txt".
 	ofstream out;
 	out.open("Search Engine-Data/___index.txt", ios::app);
@@ -203,7 +209,7 @@ void userIndexNewDoc(trieNode* mainTrie, trieNode* titleTrie, vector <string>& d
 	// Index its title to title trie.
 	indexTitle(titleTrie, newpath, docnum);
 
-	cout << "The document has been indexed successfully!\n";
+	cout << "\nThe document has been indexed successfully!\n";
 }
 
 // Index all data.
@@ -500,8 +506,8 @@ vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPat
 	return res;
 }
 
-//Operator 10: Search for wild cards or unknown words
-//Idea: remove the * character then perform searchFullText as usual
+// Operator 10: Search for wild cards or unknown words
+// Idea: remove the * character then perform searchFullText as usual
 vector<int> searchWildCards(trieNode* root, string query) {
 	string tmp = "";
 	int i = 0;
@@ -616,10 +622,13 @@ vector <int> operator11(trieNode* root, string text) {
 }
 
 
-//Operator 12: Search for synonyms
-//Idea: Use a pre-installed text file of synonyms and perform
-//a linear search on the content of that file
-//Assuming that the query entered has only one word
+
+
+// Operator 12: Search for synonyms
+// Idea: Use a pre-installed text file of synonyms and perform
+// a linear search on the content of that file
+// Assuming that the query entered has only one word
+
 vector<int> searchSynonyms(trieNode* root, string query) {
 	//remove the '~' character
 	query = query.substr(1, (int)query.length() - 1);

@@ -781,7 +781,7 @@ bool isExactlyMatch(int docNum, vector<string> docPath, string query) {
 // ============= HISTORY =============
 trieNode2* initNode2() {
 	trieNode2* root = new trieNode2;
-	for (int i = 0; i < 39; i++)
+	for (int i = 0; i < 47; i++)
 		root->children[i] = nullptr;
 	root->isEndWord = false;
 	return root;
@@ -799,6 +799,22 @@ void insertToTrie2(trieNode2* root, string query) {
 			index = 37;
 		else if (query[i] == '$')
 			index = 38;
+		else if (query[i] == '+')
+			index = 39;
+		else if (query[i] == ':')
+			index = 40;
+		else if (query[i] == '.')
+			index = 41;
+		else if (query[i] == '\'')
+			index = 42;
+		else if (query[i] == '*')
+			index = 43;
+		else if (query[i] == '-')
+			index = 44;
+		else if (query[i] == '"')
+			index = 45;
+		else if (query[i] == '~')
+			index == 46;
 		else index = query[i] - '0' + 26;
 
 		if (!cur->children[index])
@@ -812,8 +828,12 @@ void insertToTrie2(trieNode2* root, string query) {
 
 bool isChar(char c) {
 	if ('z' >= c && c >= 'a') return true;
-	if (c ==' ' || c =='#' || c=='$' ) return true;
+	if (c == ' ' || c == '#' || c == '$' || c == '+' || c == ':' ||c=='~'
+		|| c == '.' || c == '\'' || c == '*' || c == '-' || c == '"')
+		return true;
 	if (c >= 65 && c <= 90)return true;
+	if (c >= '0' && c <= '9') return true;
+
 	return false;
 }
 
@@ -847,13 +867,20 @@ void suggestions(trieNode2* root, string prefix, Console &c, int &pos, vector<st
 	if (isLastNode(root))
 		return;
 
-	for (int i = 0; i < 39; i++) {
+	for (int i = 0; i < 47; i++) {
 		if (root->children[i]) {
 			// Append current character to prefix string 
 			if (i == 36) prefix.push_back(' ');
 			else if (i == 37) prefix.push_back('#');
 			else if (i == 38) prefix.push_back('$');
 			else if (i < 26) prefix.push_back(97 + i);
+			else if (i == 39) prefix.push_back('+');
+			else if (i == 40) prefix.push_back(':');
+			else if (i == 41) prefix.push_back('.');
+			else if (i == 42) prefix.push_back('\'');
+			else if (i == 43) prefix.push_back('*');
+			else if (i == 44) prefix.push_back('-');
+			else if (i == 45) prefix.push_back('"');
 			else prefix.push_back(i - 26 + 48);
 
 			// Recur over the rest 
@@ -884,7 +911,22 @@ int printAutoSuggestions(trieNode2* root, string query, Console &c, vector<strin
 			index = 37;
 		else if (query[i] == '$')
 			index = 38;
+		else if (query[i] == '+')
+			index = 39;
+		else if (query[i] == ':')
+			index = 40;
+		else if (query[i] == '.')
+			index = 41;
+		else if (query[i] == '\'')
+			index = 42;
+		else if (query[i] == '*')
+			index = 43;
+		else if (query[i] == '-')
+			index = 44;
+		else if (query[i] == '"')
+			index = 45;
 		else index = query[i] - '0' + 26;
+
 
 		// If given string doesnot exist in the trie return 0.
 		if (!cur->children[index])
