@@ -51,9 +51,9 @@ void deleteWholeTrie(trieNode* root) {
 }
 
 // Write each word in the trie and its document num line by line to text file.
-void saveTrieToFile(trieNode* root, ofstream &out, string word) {
+void saveTrieToFile(trieNode* root, ofstream& out, string word) {
 	if (root == nullptr) return;
-	if (root->isEndWord){
+	if (root->isEndWord) {
 		out << word << " ";
 		out << root->documents.size() << " ";
 		for (int i = 0; i < root->documents.size(); i++)
@@ -90,7 +90,7 @@ void retrieve(trieNode*& root, ifstream& in, string address) {
 			for (int i = 0; i < n; i++) {
 				int t;
 				in >> t;
-				docNum.push_back(i);
+				docNum.push_back(t);
 			}
 			insertToTrie(root, word, docNum);
 		}
@@ -111,7 +111,7 @@ void indexMainTrie(trieNode* mainTrie, string path, int docnum) {
 		while (in >> singleWord) {
 			toLower(singleWord);
 			removePunctuation(singleWord);
-			if(isWord(singleWord))
+			if (isWord(singleWord))
 				insertToTrie(mainTrie, singleWord, docNum);
 		}
 		in.close();
@@ -135,7 +135,7 @@ void indexTitle(trieNode* titleTrie, string path, int docnum) {
 			while (words >> word) {
 				toLower(word);
 				removePunctuation(word);
-				if(isWord(word))
+				if (isWord(word))
 					insertToTrie(titleTrie, word, docNum);
 			}
 			line = "";
@@ -213,7 +213,7 @@ void userIndexNewDoc (trieNode* mainTrie, trieNode* titleTrie, vector <string>& 
 }
 
 // Index all data.
-void indexAllData(trieNode* mainTrie, trieNode* titleTrie, vector <string> & docPath) {
+void indexAllData(trieNode* mainTrie, trieNode* titleTrie, vector <string>& docPath) {
 	for (int i = 0; i < docPath.size(); i++) {
 		string path = docPath.at(i);
 		indexMainTrie(mainTrie, path, i);
@@ -222,7 +222,7 @@ void indexAllData(trieNode* mainTrie, trieNode* titleTrie, vector <string> & doc
 }
 
 // Read all doc names in "__index.txt" to vector<string>docPath.
-void buildDocPath(vector <string> &docPath) {
+void buildDocPath(vector <string>& docPath) {
 	ifstream in;
 	in.open("Search Engine-Data/___index.txt");
 	if (in.is_open()) {
@@ -249,7 +249,7 @@ vector <int> searchKeyword(trieNode* root, string keyword) {
 		else if (keyword[i] == '\'') index = 36;
 		else if (keyword[i] == '#') index = 37;
 		else if (keyword[i] == '$') index = 38;
-		else index = keyword[i] - '0';
+		else index = keyword[i] - '0' + 26;
 
 		if (!cur->children[index]) return res;
 		cur = cur->children[index];
@@ -262,60 +262,61 @@ vector <int> searchKeyword(trieNode* root, string keyword) {
 }
 
 vector <int> searchFullText(trieNode* root, string text) {
-    int count_doc_appear[12000],count_words=0;
-    for (int i=0;i<12000;i++) count_doc_appear[i]=0;
+	int count_doc_appear[12000], count_words = 0;
+	for (int i = 0; i < 12000; i++) count_doc_appear[i] = 0;
 
-    string tmp="";
-    vector <int> res;
+	string tmp = "";
+	vector <int> res;
 
-    for (int i=0; i<text.length() ;i++) {
-        if ( text[i]==' ' || i==text.length()-1) {
-            if (i==text.length()-1)
-                if (text[i] != ' ')
-                    tmp+=text[i];
+	for (int i = 0; i < text.length(); i++) {
+		if (text[i] == ' ' || i == text.length() - 1) {
+			if (i == text.length() - 1)
+				if (text[i] != ' ')
+					tmp += text[i];
 
-            vector <int> doc_temp;
-            doc_temp=searchKeyword(root,tmp);
+			vector <int> doc_temp;
+			doc_temp = searchKeyword(root, tmp);
 
-            for (int j=0;j<doc_temp.size();j++)
-                count_doc_appear[doc_temp[j]]++;
+			for (int j = 0; j < doc_temp.size(); j++)
+				count_doc_appear[doc_temp[j]]++;
 
-            count_words++;
-            tmp="";
-        } else {
-            tmp+=text[i];
-        }
-    }
+			count_words++;
+			tmp = "";
+		}
+		else {
+			tmp += text[i];
+		}
+	}
 
-    for (int i=0;i<12000;i++)
-        if (count_doc_appear[i]==count_words)
-            res.push_back(i);
+	for (int i = 0; i < 12000; i++)
+		if (count_doc_appear[i] == count_words)
+			res.push_back(i);
 
-    return res;
+	return res;
 }
 
 
-vector <int> searchTextfromVector (trieNode* root, vector <string> t) {
-    vector <int> res;
+vector <int> searchTextfromVector(trieNode* root, vector <string> t) {
+	vector <int> res;
 	vector <int>* _doc = new vector <int>[t.size()];
-    int count_doc_appear[12000];
+	int count_doc_appear[12000];
 
-    for (int i=0;i<12000;i++) count_doc_appear[i]=0;
+	for (int i = 0; i < 12000; i++) count_doc_appear[i] = 0;
 
-    for (int i=0;i<t.size();i++)
-        _doc[i]=searchFullText(root,t[i]);
+	for (int i = 0; i < t.size(); i++)
+		_doc[i] = searchFullText(root, t[i]);
 
-    for (int i=0;i<t.size();i++) {
-        for (int j=0;j<_doc[i].size();j++)
-            count_doc_appear[j]++;
-    }
+	for (int i = 0; i < t.size(); i++) {
+		for (int j = 0; j < _doc[i].size(); j++)
+			count_doc_appear[_doc[i][j]]++;
+	}
 
-    for (int i=0;i<12000;i++)
-        if (count_doc_appear[i]==t.size())
-            res.push_back(i);
+	for (int i = 0; i < 12000; i++)
+		if (count_doc_appear[i] == t.size())
+			res.push_back(i);
 
 	delete[]_doc;
-    return res;
+	return res;
 }
 
 // ==========OPERATOR=============
@@ -337,18 +338,18 @@ vector <int> searchOr(trieNode* root, string text) {
 	string tmp = "", check_or = "";
 	vector <string> split;
 	vector <int> res;
-    int index_or;
+	int index_or;
 
-    //check the position of "or"
+	//check the position of "or"
 	for (int i = 0; i < text.length(); i++) {
 		if (text[i] == ' ' || i == text.length() - 1) {
 			if (i == text.length() - 1)
 				if (text[i] != ' ')
-                    check_or += text[i];
+					check_or += text[i];
 
 			if (check_or == "or") {
-                index_or=i;
-                break;
+				index_or = i;
+				break;
 			}
 			check_or = "";
 		}
@@ -356,15 +357,15 @@ vector <int> searchOr(trieNode* root, string text) {
 	}
 
 	//Left phrase of Or
-	for (int i=0;i<=index_or-4;i++) tmp+=text[i];
+	for (int i = 0; i <= index_or - 4; i++) tmp += text[i];
 
-    split.push_back(tmp);
-    tmp="";
+	split.push_back(tmp);
+	tmp = "";
 
-    //Right phrase of Or
-    for (int i=index_or+1;i<text.length();i++) tmp+=text[i];
-    split.push_back(tmp);
-    tmp="";
+	//Right phrase of Or
+	for (int i = index_or + 1; i < text.length(); i++) tmp += text[i];
+	split.push_back(tmp);
+	tmp = "";
 
 	res = searchTextfromVector(root, split);
 	return res;
@@ -375,32 +376,23 @@ vector <int> searchOr(trieNode* root, string text) {
 // It will search all the document which contain "Manchester" and do not contain "united"
 vector <int> searchWithoutaWord(trieNode* root, string text) {
 	string tmp = "";
+	string eliminate = "";
 	vector <string> split;
-	vector <int> res, temp_res, eliminate_doc;
-	string word_eliminate = "";
+	stringstream file(text);
 
-	int i = 0;
-	while (i < text.length() - 1) {
-		if (text[i] == ' ') {
-			if (text[i + 1] = '-') {
-				int j = i + 2;
-				while (text[j] != ' ') {
-					word_eliminate += text[j];
-					j++;
-				}
-				i = j;
-			}
-			else {
-				split.push_back(tmp);
-				tmp = "";
-			}
+	while (file >> tmp) {
+		if (tmp[0] == '-') {
+			for (int i = 1; i < tmp.size(); i++)
+				eliminate += tmp[i];
 		}
-		else tmp += text[i];
-		i++;
+		else split.push_back(tmp);
 	}
 
-	temp_res = searchTextfromVector(root, split);
-	eliminate_doc = searchFullText(root, word_eliminate);
+	vector<int> temp_res = searchTextfromVector(root, split);
+
+	vector<int> eliminate_doc = searchFullText(root, eliminate);
+
+	vector<int> res;
 
 	for (int k = 0; k < temp_res.size(); k++) {
 		int flag = 0;
@@ -412,17 +404,17 @@ vector <int> searchWithoutaWord(trieNode* root, string text) {
 			}
 		}
 
-		if (flag == 0) res.push_back(k);
+		if (flag == 0) res.push_back(temp_res[k]);
 	}
 
 	return res;
 }
 
-// Operator 4: Search for a title of a document. For example: intitle:hammer nails
+// Operator 4: Search for a title of a document. For example: intitle: hammer nails
 vector <int> searchTitle(trieNode* titleTrie, string text) {
 	string new_text = "";
 	vector <int> res;
-	for (int i = 8; i < text.length(); i++) new_text += text[i];
+	for (int i = 9; i < text.length(); i++) new_text += text[i];
 	res = searchFullText(titleTrie, new_text);
 	return res;
 }
@@ -437,7 +429,10 @@ vector<int> operator5(trieNode* root, string query, vector<string>docPath) {
 		if (word == "+and") {
 			word = "and";
 		}
-		tem += word;
+		tem = tem + word + " ";
+	}
+	if (tem[tem.size() - 1] == ' ') {
+		tem.erase(tem.size() - 1, 1);
 	}
 	vector<int> res = searchFullText(root, tem);
 	for (int i = 0; i < res.size(); i++) {
@@ -450,37 +445,29 @@ vector<int> operator5(trieNode* root, string query, vector<string>docPath) {
 	return res;
 }
 
-//Operator 6: Search for a filetype. For example: filetype:txt + text search
+//Operator 6: Search for a filetype. For example: filetype: txt + text search
 //should be at the first position of the string
 vector <int> searchFiletype(trieNode* root, string text, vector <string> docPath) {
-	vector <string> type;
+	string type, word, temp = "";
 	vector <int> res, tmp_res;
-	string tmp = "";
-	string new_text = "";
-	int i = 9;
-	while (text[i] != ' ') {
-		if (text[i + 1] == ' ' || text[i] == ',') {
-			type.push_back(tmp);
-			tmp = "";
+	stringstream find(text);
+	int countWord = 0;
+	while (find >> word) {
+		countWord++;
+		if (countWord == 2) {
+			type = word;
 		}
-		else {
-			tmp += text[i];
-		}
-		i++;
+		if (countWord > 2)
+			temp = temp + word + " ";
 	}
-	i++;
+	temp.erase(temp.size() - 1, 1);
 
-	for (int j = i; j < text.length(); j++) new_text += text[j];
-	tmp_res = searchFullText(root, new_text);
+	tmp_res = searchFullText(root, temp);
 
 	for (int j = 0; j < tmp_res.size(); j++) {
 		string tmp_type = fileType(docPath[tmp_res[j]]);
-		for (int k = 0; k < type.size(); k++) {
-			if (tmp_type == type[k]) {
-				res.push_back(j);
-				break;
-			}
-		}
+
+		if (tmp_type == type) res.push_back(tmp_res[j]);
 	}
 
 	return res;
@@ -520,10 +507,10 @@ vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPat
 // Idea: remove the * character then perform searchFullText as usual
 vector<int> searchWildCards(trieNode* root, string query) {
 	string tmp = "";
-	int i = 0; 
-	while(i<(int)query.length()) {
-		if(query[i]=='*') i+=2;
-		else tmp+=query[i++];
+	int i = 0;
+	while (i < (int)query.length()) {
+		if (query[i] == '*') i += 2;
+		else tmp += query[i++];
 	}
 	return searchFullText(root, tmp);
 }
@@ -629,32 +616,32 @@ vector <int> searchRangeOfNumber(trieNode* root, string range) {
 // Assuming that the query entered has only one word
 vector<int> searchSynonyms(trieNode* root, string query) {
 	//remove the '~' character
-	query = query.substr(1, (int)query.length()-1);
+	query = query.substr(1, (int)query.length() - 1);
 	vector<string> store;
 	vector<int> ret;
 	ifstream synonyms;
 	synonyms.open("synonyms.txt");
-	if(!synonyms.is_open()) {
+	if (!synonyms.is_open()) {
 		cout << "Cannot open synonyms.txt!\n";
 		return ret;
 	}
 	bool ok = 0;
-	while(!synonyms.eof()) {
+	while (!synonyms.eof()) {
 		vector<string> tmp(3, "");
-		synonyms>>tmp[0]>>tmp[1]>>tmp[2];
-		if(tmp[0]==query or tmp[1]==query or tmp[2]==query) {
+		synonyms >> tmp[0] >> tmp[1] >> tmp[2];
+		if (tmp[0] == query or tmp[1] == query or tmp[2] == query) {
 			synonyms.close();
 			store = tmp;
 			ok = 1;
 			break;
 		}
 	}
-	if(!ok) synonyms.close(), store.push_back(query); 
+	if (!ok) synonyms.close(), store.push_back(query);
 
 	//store now stores all the synonyms together with that word
 	string newQuery = "";
-	for(int i=0; i<(int)store.size(); i++) {
-		if(i!=0) newQuery = newQuery+" "+store[i];
+	for (int i = 0; i < (int)store.size(); i++) {
+		if (i != 0) newQuery = newQuery + " " + store[i];
 		else newQuery = store[i];
 	}
 	return searchFullText(root, newQuery);
@@ -777,7 +764,7 @@ int compareNumber(string num1, string num2) {
 
 string fileType(string doc_Path) {
 	int mark_point;
-	for (int i = doc_Path.length(); i >= 0; i--) {
+	for (int i = doc_Path.length() - 1; i >= 0; i--) {
 		if (doc_Path[i] == '.') {
 			mark_point = i + 1;
 			break;

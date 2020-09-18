@@ -1,9 +1,9 @@
 #ifndef _FUCNTION_H_
 #define _FUNCTION_H_
-
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <string.h>
 #include <vector>
 #include <sstream>
 #include <conio.h>
@@ -23,7 +23,7 @@ using namespace std;
 #include"QueryProcess.h"
 #include"Console.h"
 class Console;
-
+struct trieNode;
 
 
 
