@@ -58,6 +58,12 @@ void printGeneral(string query, string docPath, Console& c);
 
 void printQueryMatch(string query, string docPath, Console& c);
 
+void printTitle(string query, string docPath, Console& c);
+
+void printRange(string query, string docPath, Console& c);
+
+bool checkInRange(string range, string text);
+
 #endif
 
 

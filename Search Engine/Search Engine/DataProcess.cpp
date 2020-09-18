@@ -192,7 +192,7 @@ void userIndexNewDoc (trieNode* mainTrie, trieNode* titleTrie, vector <string>& 
 	outt << inn.rdbuf();
 	std::remove(oldPath);
 
-	
+
 	// Add document path to file "__index.txt".
 	ofstream out;
 	out.open("Search Engine-Data/___index.txt", ios::app);
@@ -373,7 +373,14 @@ vector <int> searchOr(trieNode* root, string& text) {
 	split.push_back(tmp);
 	tmp = "";
 
-	res = searchTextfromVector(root, split);
+	vector <int> left_res, right_res;
+	left_res=searchFullText(root,split[0]);
+	right_res=searchFullText(root,split[1]);
+
+	for (int i=0;i<left_res.size();i++) res.push_back(left_res[i]);
+	for (int i=0;i<right_res.size();i++) {
+        if (!binary_search(left_res.begin(),left_res.end(),right_res[i])) res.push_back(right_res[i]);
+	}
 
 	text = "";
 	for (int i = 0; i < split.size(); i++) {
@@ -618,7 +625,7 @@ vector <int> operator11(trieNode* root, string text) {
 			num2 += range[i];
 		}
 		int number1 = toInt(num1), number2 = toInt(num2);
-		
+
 		for (int i = number1; i <= number2; ++i) {
 			string tmp = toStr(i);
 			vector <int> temp_res;
@@ -677,7 +684,7 @@ vector<int> searchSynonyms(trieNode* root, string query) {
 
 	//store now stores all the synonyms together with that word
 	if((int)store.size()==1) return searchKeyword(root, store[0]);
-	
+
 	vector<int> ret1 = searchKeyword(root, store[0]);
 	vector<int> ret2 = searchKeyword(root, store[1]);
 	vector<int> ret3 = searchKeyword(root, store[2]);
@@ -805,3 +812,4 @@ string fileType(string doc_Path) {
 	}
 	return res;
 }
+
