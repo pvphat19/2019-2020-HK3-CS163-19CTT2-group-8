@@ -67,6 +67,7 @@ void getInput(trieNode2* history, string& query, Console &con);
 
 
 void printGeneral(string query, string docPath, Console& c);
+void printQueryMatch(string query, string docPath, Console& c);
 
 #endif
 

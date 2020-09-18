@@ -61,11 +61,10 @@ int main()
 	//return 0;
 
 	Console c;
-	string query = "posing vessels from";
+	string query = "posing as crew";
 	string docPath = "Search Engine-Data/000.txt";
-	printGeneral(query, docPath, c);
+	printQueryMatch(query, docPath, c);
 
 	return 0;
-
 	
 }

@@ -1073,6 +1073,7 @@ void printGeneral(string query, string docPath, Console& c) {
 					
 			}
 			if (lineNum.size()) {
+				c.setBackColor(BLACK).setForeColor(WHITE).write("...", false);
 				for (int i = 0; i < 20; i++) {
 					int flag = 0;
 					for (int j = 0; j < lineNum.size(); j++) {
@@ -1087,6 +1088,7 @@ void printGeneral(string query, string docPath, Console& c) {
 						c.setBackColor(BLACK).setForeColor(WHITE).write(line[i] + " ", false);
 					}
 				}
+				c.setBackColor(BLACK).setForeColor(WHITE).write("...", false);
 			}
 
 			// if all word in split are visited break
@@ -1096,8 +1098,55 @@ void printGeneral(string query, string docPath, Console& c) {
 			if (count == split.size())
 				break;
 		}
+
+		delete[]visited;
 		in.close();
 	}
+}
 
+void printQueryMatch(string query, string docPath, Console& c) {
+	// count word in query
+	stringstream words(query);
+	string word;
+	int count = 0;
+	while (words >> word) {
+		count++;
+	}
 
+	ifstream in;
+	in.open(docPath);
+	if(in.is_open()) {
+		while (!in.eof()) {
+			vector <string> line;
+			int flag = false;
+			for (int i = 0; i < 9; i++) {
+				string word = "";
+				for (int j = 0; j < count; j++) {
+					string tem;
+					if (in >> tem)
+						word = word + tem + " ";
+				}
+				word.erase(word.size() - 1, 1);
+				line.push_back(word);
+				if (word == query) flag = true;
+			}
+
+			if (flag) {
+				c.setBackColor(BLACK).setForeColor(WHITE).write("...", false);
+				for (int i = 0; i < 9; i++) {
+					if (line[i] == query) {
+						c.setBackColor(YELLOW).setForeColor(BLACK).write(line[i], false);
+						c.setBackColor(BLACK).setForeColor(WHITE).write(" ", false);
+					}
+					else {
+						c.setBackColor(BLACK).setForeColor(WHITE).write(line[i] + " ", false);
+					}
+				}
+				c.setBackColor(BLACK).setForeColor(WHITE).write("...", false);
+				break;
+			}
+		}
+
+		in.close();
+	}
 }
