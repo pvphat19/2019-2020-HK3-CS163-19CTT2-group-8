@@ -17,6 +17,7 @@ bool checkSubstring(string str1, string str2);
 void searchOperator10(ifstream& in, string query);
 void searchOperator11(ifstream& in, string query);
 bool checkInRange(string range, string text);
+void searchOperator12(ifstream& in, string query);
 
 string removeSymbols(string query);
 string removeStopWords(string query);

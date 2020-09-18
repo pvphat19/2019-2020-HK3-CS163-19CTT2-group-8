@@ -22,47 +22,43 @@ void presentResult(trieNode* root, string query, vector <string> docPath) {
 
 	vector<int> res;
 
-	for (int i = 0; i < queryTypes.size(); ++i) {
-		if (queryTypes[i] == 1) {
-			res = searchAnd(root, query);
-		}
-		else if (queryTypes[i] == 2) {
-			res = searchOr(root, query);
-		}
-		else if (queryTypes[i] == 3) {
-			res = searchWithoutaWord(root, query);
-		}
-		else if (queryTypes[i] == 4) {
-			res = searchTitle(root, query);
-		}
-		else if (queryTypes[i] == 5) {
-			res = operator5(root, query, docPath);
 
-		}
-		else if (queryTypes[i] == 6) {
-			res = searchFiletype(root, query, docPath);
-
-		}
-		else if (queryTypes[i] == 7) {
-			res = searchForPrice(root, query);
-		}
-		else if (queryTypes[i] == 8) {
-			res = searchHashtag(root, query);
-		}
-		else if (queryTypes[i] == 9) {
-			res = searchExactMatch(root, query, docPath);
-		}
-		else if (queryTypes[i] == 10) {
-
-		}
-		else if (queryTypes[i] == 11) {
-			res = searchRangeOfNumber(root, query);
-		}
-		else {//operator 12
-
-		}
+	if (queryTypes[0] == 1) {
+		res = searchAnd(root, query);
 	}
-
+	else if (queryTypes[0] == 2) {
+		res = searchOr(root, query);
+	}
+	else if (queryTypes[0] == 3) {
+		res = searchWithoutaWord(root, query);
+	}
+	else if (queryTypes[0] == 4) {
+		res = searchTitle(root, query);
+	}
+	else if (queryTypes[0] == 5) {
+		res = operator5(root, query, docPath);
+	}
+	else if (queryTypes[0] == 6) {
+		res = searchFiletype(root, query, docPath);
+	}
+	else if (queryTypes[0] == 7) {
+		res = searchForPrice(root, query);
+	}
+	else if (queryTypes[0] == 8) {
+		res = searchHashtag(root, query);
+	}
+	else if (queryTypes[0] == 9) {
+		res = searchExactMatch(root, query, docPath);
+	}
+	else if (queryTypes[0] == 10) {
+		res = searchWildCards(root, query);
+	}
+	else if (queryTypes[0] == 11) {
+		res = searchRangeOfNumber(root, query);
+	}
+	else {//operator 12
+		res = searchSynonyms(root, query);
+	}
 	//give out result
 	for (int i = 0; i < 5; ++i) {
 		if (i > res.size() - 1) break;
@@ -78,18 +74,19 @@ void presentResult(trieNode* root, string query, vector <string> docPath) {
 		cout << i + 1 << ". " << docName << endl;
 	}
 	//let the clients choose what to present, not for operator 4, 6
-
-	cout << "Enter the order of document you want to view result(0 for exit): ";
-	int choice;
-	cin >> choice;
-	while (choice < 0 || choice>5 || choice > res.size()) {
-		cout << "Please enter another number: ";
+	if (queryTypes[0] != 4 && queryTypes[0] != 6) {
+		cout << "Enter the order of document you want to view result(0 for exit): ";
+		int choice;
 		cin >> choice;
-	}
+		while (choice < 0 || choice>5 || choice > res.size()) {
+			cout << "Please enter another number: ";
+			cin >> choice;
+		}
 
-	//present the paragraph and highlight keywords
-	string path = docPath[choice];
-	//presentParagraph(path, query, queryType);
+		//present the paragraph and highlight keywords
+		string path = docPath[choice];
+		presentParagraph(path, query, queryTypes[0]);
+	}
 }
 
 //present the paragraph
@@ -130,9 +127,10 @@ void  presentParagraph(string path, string query, int queryType) {
 		searchOperator11(in, query);
 	}
 	else {//operator 12
-
+		searchOperator12(in, query);
 	}
 
+	in.close();
 }
 
 // ========== SUPPORTING FUNCTION ==========
@@ -496,8 +494,54 @@ bool checkInRange(string range, string text) {
 	return true;
 }
 //Operator 12
+void searchOperator12(ifstream& in, string query) {
+	//remove the '~' character
+	query = query.substr(1, (int)query.length() - 1);
 
+	vector<string> store;
+	ifstream synonyms;
+	synonyms.open("synonyms.txt");
+	if (!synonyms.is_open()) {
+		cout << "Cannot open synonyms.txt!\n";
+		return;
+	}
+	bool ok = 0;
+	while (!synonyms.eof()) {
+		vector<string> tmp(3, "");
+		synonyms >> tmp[0] >> tmp[1] >> tmp[2];
+		if (tmp[0] == query or tmp[1] == query or tmp[2] == query) {
+			synonyms.close();
+			store = tmp;
+			ok = 1;
+			break;
+		}
+	}
+	if (!ok) synonyms.close(), store.push_back(query);
 
+	//store now stores all the synonyms together with that word
+	string newQuery = "";
+	for (int i = 0; i < (int)store.size(); i++) {
+		if (i != 0) newQuery = newQuery + " " + store[i];
+		else newQuery = store[i];
+	}
+	vector <string> res;
+
+	vector <string> queryWords; //vector that holds words of query
+
+	stringstream words(newQuery);
+	string word;
+	string tem = "";
+	while (words >> word) {
+		queryWords.push_back(word);
+	}
+
+	res = searchSentence(in, queryWords);
+
+	//Present result
+	for (int i = 0; i < res.size(); ++i) {
+		cout << res[i] << endl;
+	}
+}
 
 // ===========STANDARDIZE QUERY===========
 
