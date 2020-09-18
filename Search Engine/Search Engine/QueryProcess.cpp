@@ -16,12 +16,11 @@ string inputQuery() {
 	return query;
 }
 
-void presentResult(trieNode* root, string query, vector <string> docPath, Console& c) {
+void presentResult(trieNode* root,trieNode* titleTrie, string query, vector <string> docPath, Console& c) {
 	vector <int> queryTypes;
 	queryTypes = queryType(query);
 
 	vector<int> res;
-
 
 	if (queryTypes[0] == 1) {
 		res = searchAnd(root, query);
@@ -33,7 +32,7 @@ void presentResult(trieNode* root, string query, vector <string> docPath, Consol
 		res = searchWithoutaWord(root, query);
 	}
 	else if (queryTypes[0] == 4) {
-		res = searchTitle(root, query);
+		res = searchTitle(titleTrie, query);
 	}
 	else if (queryTypes[0] == 5) {
 		res = operator5(root, query, docPath);
@@ -54,7 +53,7 @@ void presentResult(trieNode* root, string query, vector <string> docPath, Consol
 		res = searchWildCards(root, query);
 	}
 	else if (queryTypes[0] == 11) {
-		res = searchRangeOfNumber(root, query);
+		res = operator11(root, query);
 	}
 	else {//operator 12
 		res = searchSynonyms(root, query);

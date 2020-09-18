@@ -321,8 +321,11 @@ vector <int> searchAnd(trieNode* root, string query) {
 	string tem = "";
 	while (words >> word) {
 		if (word != "and") {
-			tem = tem + " " + word;
+			tem = tem + word + " ";
 		}
+	}
+	if (tem != "") {
+		tem.erase(tem.size() - 1, 1);
 	}
 	return searchFullText(root, tem);
 }
@@ -510,49 +513,25 @@ vector<int> searchWildCards(trieNode* root, string query) {
 }
 
 // Operator 11: Search for a range of number. Put .. between two numbers. For example: $50..$100
-// range in form of: 100..200 or $100..$200, the smaller must be in front of the larger
 vector <int> operator11(trieNode* root, string text) {
-	int count_doc_appear[12000] = { 0 }, count_words = 0;
+	vector<int> res;
 
-	string tmp = "";
-	vector <int> res;
+	string query = "";
+	string range;
 
-	for (int i = 0; i < text.length(); i++) {
-		if (text[i] == ' ' || i == text.length() - 1) {
-			if (i == text.length() - 1)
-				if (text[i] != ' ')
-					tmp += text[i];
-
-			vector <int> doc_temp;
-			//check if the word is in form of range
-			if (checkRange(tmp)) {
-				doc_temp = searchRangeOfNumber(root, tmp);
-			}
-			else {
-				//Ordinary words
-				doc_temp = searchKeyword(root, tmp);
-			}
-
-			for (int j = 0; j < doc_temp.size(); j++)
-				count_doc_appear[doc_temp[j]]++;
-
-			count_words++;
-			tmp = "";
+	stringstream words(text);
+	string word;
+	int count = 0;
+	while (words >> word) {
+		if (count == 0 && checkRange(word) ){
+			range = word;
+			count++;
 		}
-		else {
-			tmp += text[i];
-		}
+		else query = query + word + " ";
 	}
-
-	for (int i = 0; i < 12000; i++)
-		if (count_doc_appear[i] == count_words)
-			res.push_back(i);
-
-	return res;
-}
-
-vector <int> searchRangeOfNumber(trieNode* root, string range) {
-	vector <int> res;
+	if (query != "") {
+		query.erase(query.size() - 1, 1);
+	}
 
 	if (range[0] == '$') {
 		//get two numbers in the range
@@ -573,10 +552,24 @@ vector <int> searchRangeOfNumber(trieNode* root, string range) {
 			num2 += range[i];
 		}
 
-		trieNode* cur = root->children[38];
-		if (cur == nullptr) return res;
-		searchRange(cur, res, num1, num2, "");
+		int number1 = toInt(num1), number2 = toInt(num2);
 
+		for (int i = number1; i <= number2; ++i) {
+			string tmp = toStr(i);
+			tmp = '$' + tmp;
+			vector <int> temp_res = searchFullText(root, query + tmp);
+			for (int j = 0; j < temp_res.size(); ++j) {
+				bool check = true;
+				for (int k = 0; k < res.size(); ++k) {
+					if (temp_res[j] == res[k]) {
+						check = false;
+						break;
+					}
+				}
+				if (check == true) res.push_back(temp_res[j]);
+				if (res.size() == 5) return res;
+			}
+		}
 	}
 	else {
 		//get two numbers in the range
@@ -596,14 +589,33 @@ vector <int> searchRangeOfNumber(trieNode* root, string range) {
 		for (int i = beginNum2; i < range.size(); ++i) {
 			num2 += range[i];
 		}
-
-		trieNode* cur = root;
-		if (cur == nullptr) return res;
-		searchRange(cur, res, num1, num2, "");
+		int number1 = toInt(num1), number2 = toInt(num2);
+		
+		for (int i = number1; i <= number2; ++i) {
+			string tmp = toStr(i);
+			vector <int> temp_res;
+			if (query != "") {
+				temp_res = searchFullText(root, query + " " + tmp);
+			}
+			else {
+				temp_res = searchFullText(root, tmp);
+			}
+			for (int j = 0; j < temp_res.size(); ++j) {
+				bool check = true;
+				for (int k = 0; k < res.size(); ++k) {
+					if (temp_res[j] == res[k]) {
+						check = false;
+						break;
+					}
+				}
+				if (check == true) res.push_back(temp_res[j]);
+				if (res.size() == 5) return res;
+			}
+		}
 	}
-
-	return res;
 }
+
+
 //Operator 12: Search for synonyms
 //Idea: Use a pre-installed text file of synonyms and perform
 //a linear search on the content of that file
@@ -713,38 +725,25 @@ bool checkRange(string text) {
 
 // Search range of number
 // Still work with integer only
-void searchRange(trieNode* cur, vector<int> res, string num1, string num2, string currentNumber) {
-	if (cur == nullptr) return;
 
-	if (currentNumber != "") {
-		if (stof(currentNumber) > stof(num2)) return;//if the current number is bigger than number 2, stop branch. (stof converts to float)
-		if (stoi(currentNumber) < stoi(num1)) return;//if the current number is smaller than number 2, stop branch. (stoi converts to integer)
-		if (cur->isEndWord) {
-			if (stof(currentNumber) >= stof(num1)) {//check if it is truly greater than number 1 or not
-				for (int i = 0; i < cur->documents.size(); ++i) {
-					bool t = true;
-					for (int j = 0; j < res.size(); ++j) {
-						if (cur->documents[i] == res[j]) {
-							t = false;
-							break;
-						}
-					}
-					if (t == true) {//it has not been add to result list yet
-						res.push_back(cur->documents[i]);
-					}
-				}
-			}
-		}
+int toInt(string str) {
+	int res = 0;
+	for (int i = 0; i <str.size(); ++i) {
+		res = res * 10 + str[i] - '0';
 	}
-
-	for (int i = 26; i <= 35; ++i) {
-		if (cur->children[i] != nullptr) {
-			char tmp = '0' + i - 26;
-			searchRange(cur, res, num1, num2, currentNumber + tmp);
-		}
-	}
+	return res;
 }
 
+string toStr(int num) {
+	string res = "";
+	while (num > 0) {
+		int r = num % 10;
+		num = num / 10;
+		char c = '0' + r;
+		res = c + res;
+	}
+	return res;
+}
 
 // Compare two number in string form
 // Return -1, 0, 1 for smaller than, equal to or bigger than respectively

@@ -94,7 +94,6 @@ vector<int> searchWildCards(trieNode* root, string query);
 
 // Operator 11
 vector <int> operator11(trieNode* root, string text);
-vector <int> searchRangeOfNumber(trieNode* root, string range);
 
 //Operator 12
 vector<int> searchSynonyms(trieNode* root, string query);
@@ -114,9 +113,12 @@ void removePunctuation(string& word);
 
 bool checkRange(string text);
 
+int toInt(string str);
+
+string toStr(int num);
+
 int compareNumber(string num1, string num2);
 
-void searchRange(trieNode* cur, vector<int> res, string num1, string num2, string currentNumber);
 
 string fileType(string doc_Path);
 
