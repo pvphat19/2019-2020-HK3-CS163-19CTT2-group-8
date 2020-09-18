@@ -16,77 +16,73 @@ string inputQuery() {
 	return query;
 }
 
-void presentResult(trieNode* root,trieNode* titleTrie, string query, vector <string> docPath, Console& c) {
-	vector <int> queryTypes;
-	queryTypes = queryType(query);
-
-	vector<int> res;
-
-	if (queryTypes[0] == 1) {
-		res = searchAnd(root, query);
-	}
-	else if (queryTypes[0] == 2) {
-		res = searchOr(root, query);
-	}
-	else if (queryTypes[0] == 3) {
-		res = searchWithoutaWord(root, query);
-	}
-	else if (queryTypes[0] == 4) {
-		res = searchTitle(titleTrie, query);
-	}
-	else if (queryTypes[0] == 5) {
-		res = operator5(root, query, docPath);
-	}
-	else if (queryTypes[0] == 6) {
-		res = searchFiletype(root, query, docPath);
-	}
-	else if (queryTypes[0] == 7) {
-		res = searchForPrice(root, query);
-	}
-	else if (queryTypes[0] == 8) {
-		res = searchHashtag(root, query);
-	}
-	else if (queryTypes[0] == 9) {
-		res = searchExactMatch(root, query, docPath);
-	}
-	else if (queryTypes[0] == 10) {
-		res = searchWildCards(root, query);
-	}
-	else if (queryTypes[0] == 11) {
-		res = operator11(root, query);
-	}
-	else {//operator 12
-		res = searchSynonyms(root, query);
-	}
-	//give out result
-	for (int i = 0; i < 5; ++i) {
-		if (i > res.size() - 1) break;
-		string docName = "";
-
-		int j = docPath[i].size() - 1;
-		while (j >= 0 && docPath[i][j] != '/') {
-			docName += docPath[i][j];
-			j--;
-		}
-
-		reverse(docName.begin(), docName.end());
-		cout << i + 1 << ". " << docName << endl;
-	}
-	//let the clients choose what to present, not for operator 4, 6
-	if (queryTypes[0] != 4 && queryTypes[0] != 6) {
-		cout << "Enter the order of document you want to view result(0 for exit): ";
-		int choice;
-		cin >> choice;
-		while (choice < 0 || choice>5 || choice > res.size()) {
-			cout << "Please enter another number: ";
-			cin >> choice;
-		}
-
-		//present the paragraph and highlight keywords
-		string path = docPath[choice];
-		presentParagraph(path, query, queryTypes[0], c);
-	}
-}
+//void presentResult(trieNode* root,trieNode* titleTrie, string query, vector <string> docPath, Console& c) {
+//	vector <int> queryTypes;
+//	queryTypes = queryType(query);
+//
+//	vector<int> res;
+//	if (queryTypes.size() == 0) res= searchFullText(root, query);
+//	else if (queryTypes[0] == 1) {
+//		res = searchAnd(root, query);
+//	}
+//	else if (queryTypes[0] == 2) {
+//		res = searchOr(root, query);
+//	}
+//	else if (queryTypes[0] == 3) {
+//		res = searchWithoutaWord(root, query);
+//	}
+//	else if (queryTypes[0] == 4) {
+//		res = searchTitle(titleTrie, query);
+//	}
+//	else if (queryTypes[0] == 5) {
+//		res = operator5(root, query, docPath);
+//	}
+//	else if (queryTypes[0] == 6) {
+//		res = searchFiletype(root, query, docPath);
+//	}
+//	else if (queryTypes[0] == 7) {
+//		res = searchForPrice(root, query);
+//	}
+//	else if (queryTypes[0] == 8) {
+//		res = searchHashtag(root, query);
+//	}
+//	else if (queryTypes[0] == 9) {
+//		res = searchExactMatch(root, query, docPath);
+//	}
+//	else if (queryTypes[0] == 10) {
+//		res = searchWildCards(root, query);
+//	}
+//	else if (queryTypes[0] == 11) {
+//		res = operator11(root, query);
+//	}
+//	else if (queryTypes[0] == 12) {//operator 12
+//		res = searchSynonyms(root, query);
+//	}
+//
+//	//give out result
+//	for (int i = 0; i < 5; ++i) {
+//		if (i > res.size() - 1) break;
+//		string docName = "";
+//
+//		docName = docPath[res[i]];
+//		cout << i + 1 << ". " << docName << endl;
+//	}
+//	//let the clients choose what to present, not for operator 4, 6
+//	if (queryTypes[0] != 4 && queryTypes[0] != 6) {
+//		cout << "Enter the order of document you want to view result(0 for exit): ";
+//		int choice;
+//		cin >> choice;
+//		while (choice < 0 || choice>5 || choice > res.size()) {
+//			cout << "Please enter another number: ";
+//			cin >> choice;
+//		}
+//
+//		//present the paragraph and highlight keywords
+//		string path = docPath[choice];
+//		if (queryTypes.size() == 0) presentParagraph(path, query, 0, c);
+//		else presentParagraph(path, query, queryTypes[0], c);
+//	}
+//}
 
 //present the paragraph
 void  presentParagraph(string path, string query, int queryType, Console& c) {
@@ -94,17 +90,7 @@ void  presentParagraph(string path, string query, int queryType, Console& c) {
 	c.clear();
 	int x = 1, y = 50;
 
-	string docName = "";
-
-	int j = path.size() - 1;
-	while (j >= 0 && path[j] != '/') {
-		docName += path[j];
-		j--;
-	}
-
-	reverse(docName.begin(), docName.end());
-
-	c.toLine(x).toCol(y).write(docName, true);
+	c.toLine(x).toCol(y).write(path, true);
 
 	ifstream in;
 	in.open(path);
@@ -113,8 +99,10 @@ void  presentParagraph(string path, string query, int queryType, Console& c) {
 		cout << "can not open the file." << endl;
 		return;
 	}
-
-	if (queryType == 1) {
+	if (queryType == 0) {
+		searchGeneral(in, query, c);
+	}
+	else if (queryType == 1) {
 		searchOperator1(in, query, c);
 	}
 	else if (queryType == 2) {
@@ -163,7 +151,7 @@ vector <string> searchSentence(ifstream& in, vector<string> queryWords) {
 	string prev = "";
 	string cur = "";
 	while (!in.eof()) {
-		getline(cin, cur, '.');
+		getline(in, cur, '.');
 		if (cur[0] == ' ') {
 			stringstream sentence(prev);
 			string tmpWord;
@@ -211,7 +199,7 @@ vector <string> searchSentence(ifstream& in, vector<string> queryWords) {
 }
 
 void print(vector<string> sentence, vector<string> queryWords, Console& c) {
-	int x = 3, y = 30;
+	int x = 3, y = 5;
 	for (int i = 0; i < sentence.size(); ++i) {
 		c.toLine(x).toCol(y);
 		stringstream words(sentence[i]);
@@ -225,18 +213,18 @@ void print(vector<string> sentence, vector<string> queryWords, Console& c) {
 			}
 			for (int j = 0; j < queryWords.size(); ++j) {
 				if (tmp == queryWords[j]) {
-					c.setBackColor(YELLOW).write(word, true);
-					c.setBackColor(BLACK).write(" ", true);
+					c.setBackColor(YELLOW).write(word, false);
+					c.setBackColor(BLACK).write(" ", false);
 					isQueryWord = true;
 					break;
 				}
 			}
 			if (!isQueryWord) {
-				c.setBackColor(BLACK).write(word, true);
-				c.setBackColor(BLACK).write(" ", true);
+				c.setBackColor(BLACK).write(word, false);
+				c.setBackColor(BLACK).write(" ", false);
 			}
 		}
-		c.setBackColor(BLACK).write("...", true);
+		c.setBackColor(BLACK).write("...", false);
 		x++;
 	}
 	c.toLine(x);
@@ -1053,4 +1041,63 @@ void getInput(trieNode2* history, string &query, Console &c) {
 		else ch = _getch();
 	}
 	if (t != 1 && t != -1) insertToTrie2(history, query);
+}
+
+void printGeneral(string query, string docPath, Console& c) {
+	// split query
+	stringstream words(query);
+	string word;
+	vector<string>split;
+	while (words >> word) {
+		split.push_back(word);
+	}
+
+	// Open docPath to read
+	ifstream in;
+	in.open(docPath);
+	if (in.is_open()) {
+		bool* visited = new bool[split.size()]{ false };
+		while (!in.eof()) {
+			vector<string>line;
+			vector<int> lineNum;
+			for (int i = 0; i < 20; i++) {
+				string word;
+				if (in >> word) {
+					line.push_back(word);
+					for (int j = 0; j < split.size(); j++)
+						if (word == split[j] && visited[j]==false) {
+							lineNum.push_back(i);
+							visited[j] = true;
+						}
+				}
+					
+			}
+			if (lineNum.size()) {
+				for (int i = 0; i < 20; i++) {
+					int flag = 0;
+					for (int j = 0; j < lineNum.size(); j++) {
+						if (i == lineNum[j]) {
+							c.setBackColor(YELLOW).setForeColor(BLACK).write(line[i], false);
+							c.setBackColor(BLACK).setForeColor(WHITE).write(" ", false);
+							flag = 1;
+							break;
+						}
+					}
+					if (flag == 0) {
+						c.setBackColor(BLACK).setForeColor(WHITE).write(line[i] + " ", false);
+					}
+				}
+			}
+
+			// if all word in split are visited break
+			int count = 0;
+			for (int k = 0; k < split.size(); k++)
+				if (visited[k] == true) count++;
+			if (count == split.size())
+				break;
+		}
+		in.close();
+	}
+
+
 }

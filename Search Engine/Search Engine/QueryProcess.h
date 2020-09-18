@@ -4,7 +4,7 @@
 #include "Function.h"
 
 string inputQuery();
-void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <string> docPath, Console& c);
+//void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <string> docPath, Console& c);
 void presentParagraph(string path, string query, int queryType, Console& c);
 
 
@@ -64,6 +64,9 @@ void retrieve2(trieNode2* root);
 
 void getInput(trieNode2* history, string& query, Console &con);
 
+
+
+void printGeneral(string query, string docPath, Console& c);
 
 #endif
 

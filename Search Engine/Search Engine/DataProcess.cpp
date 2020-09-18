@@ -321,7 +321,7 @@ vector <int> searchTextfromVector(trieNode* root, vector <string> t) {
 
 // ==========OPERATOR=============
 // Operator 1: And operator.
-vector <int> searchAnd(trieNode* root, string query) {
+vector <int> searchAnd(trieNode* root, string &query) {
 	stringstream words(query);
 	string word;
 	string tem = "";
@@ -333,11 +333,13 @@ vector <int> searchAnd(trieNode* root, string query) {
 	if (tem != "") {
 		tem.erase(tem.size() - 1, 1);
 	}
+
+	query = tem;
 	return searchFullText(root, tem);
 }
 
 // Operator 2: Search a text which contains "or". For example: X or C
-vector <int> searchOr(trieNode* root, string text) {
+vector <int> searchOr(trieNode* root, string& text) {
 	string tmp = "", check_or = "";
 	vector <string> split;
 	vector <int> res;
@@ -371,13 +373,18 @@ vector <int> searchOr(trieNode* root, string text) {
 	tmp = "";
 
 	res = searchTextfromVector(root, split);
-	return res;
 
+	text = "";
+	for (int i = 0; i < split.size(); i++) {
+		text = text + split[i] + " ";
+	}
+	text.erase(text.size() - 1, 1);
+	return res;
 }
 
 // Operator 3: Search a text which do not contain a word. For example: Manchester -united
 // It will search all the document which contain "Manchester" and do not contain "united"
-vector <int> searchWithoutaWord(trieNode* root, string text) {
+vector <int> searchWithoutaWord(trieNode* root, string &text) {
 	string tmp = "";
 	string eliminate = "";
 	vector <string> split;
@@ -410,21 +417,28 @@ vector <int> searchWithoutaWord(trieNode* root, string text) {
 		if (flag == 0) res.push_back(temp_res[k]);
 	}
 
+	text = "";
+	for (int i = 0; i < split.size(); i++) {
+		text = text + split[i] + " ";
+	}
+	text.erase(text.size() - 1, 1);
 	return res;
 }
 
 // Operator 4: Search for a title of a document. For example: intitle: hammer nails
-vector <int> searchTitle(trieNode* titleTrie, string text) {
+vector <int> searchTitle(trieNode* titleTrie, string &text) {
 	string new_text = "";
 	vector <int> res;
 	for (int i = 9; i < text.length(); i++) new_text += text[i];
 	res = searchFullText(titleTrie, new_text);
+
+	text = new_text;
 	return res;
 }
 
 
 // Operator 5: +and operator.
-vector<int> operator5(trieNode* root, string query, vector<string>docPath) {
+vector<int> operator5(trieNode* root, string &query, vector<string>docPath) {
 	stringstream words(query);
 	string word;
 	string tem = "";
@@ -445,12 +459,14 @@ vector<int> operator5(trieNode* root, string query, vector<string>docPath) {
 		}
 		if (i == 5) break;
 	}
+
+	query = tem;
 	return res;
 }
 
 //Operator 6: Search for a filetype. For example: filetype: txt + text search
 //should be at the first position of the string
-vector <int> searchFiletype(trieNode* root, string text, vector <string> docPath) {
+vector <int> searchFiletype(trieNode* root, string& text, vector <string> docPath) {
 	string type, word, temp = "";
 	vector <int> res, tmp_res;
 	stringstream find(text);
@@ -473,6 +489,7 @@ vector <int> searchFiletype(trieNode* root, string text, vector <string> docPath
 		if (tmp_type == type) res.push_back(tmp_res[j]);
 	}
 
+	text = temp;
 	return res;
 }
 
@@ -508,14 +525,17 @@ vector<int> searchExactMatch(trieNode* root, string query, vector<string> docPat
 
 // Operator 10: Search for wild cards or unknown words
 // Idea: remove the * character then perform searchFullText as usual
-vector<int> searchWildCards(trieNode* root, string query) {
+vector<int> searchWildCards(trieNode* root, string &query) {
 	string tmp = "";
 	int i = 0;
 	while (i < (int)query.length()) {
 		if (query[i] == '*') i += 2;
 		else tmp += query[i++];
 	}
+
+	query = tmp;
 	return searchFullText(root, tmp);
+
 }
 
 // Operator 11: Search for a range of number. Put .. between two numbers. For example: $50..$100
