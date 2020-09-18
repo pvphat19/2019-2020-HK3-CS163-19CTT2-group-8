@@ -627,13 +627,13 @@ vector<int> queryType(string query) {
 	if (query.find("-") != string::npos) res.push_back(3);
 	if (query.find("intittle:") == (size_t)0) res.push_back(4);
 	if (query.find("+") != string::npos) res.push_back(5);
-	//so 6 khong hieu lam
+	if (query.find("filetype:") != string::npos) res.push_back(6);
 	if (query.find("$") != string::npos) res.push_back(7);
 	if (query.find("#") != string::npos) res.push_back(8);
 	if (query.find("\"") != string::npos) res.push_back(9);
 	if (query.find("*") != string::npos) res.push_back(10);
 	if (query.find("..") != string::npos) res.push_back(11);
-	//12 khong hieu lam
+	if(query[0]=='~') res.push_back(12);
 	return res;
 }
 
