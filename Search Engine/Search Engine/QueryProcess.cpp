@@ -729,12 +729,6 @@ void printTitle(string query, string docPath, Console& c) {
 	if (in.is_open()) {
 		string title;
 		getline(in, title, '.');
-		string cur;
-		getline(in, cur, '.');
-		while (!in.eof() && cur[0] != ' ') {
-			title = title + cur;
-			getline(in, cur, '.');
-		}
 		vector <string> split;
 		stringstream st(query);
 		string tmp;

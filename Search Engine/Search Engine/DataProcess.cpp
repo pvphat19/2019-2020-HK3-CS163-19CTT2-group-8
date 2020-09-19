@@ -567,6 +567,7 @@ vector <int> operator11(trieNode* root, string text) {
 	if (query != "") {
 		query.erase(query.size() - 1, 1);
 	}
+
 	if (range[0] == '$') {
 		//get two numbers in the range
 		string num1;
@@ -591,7 +592,13 @@ vector <int> operator11(trieNode* root, string text) {
 		for (int i = number1; i <= number2; ++i) {
 			string tmp = toStr(i);
 			tmp = '$' + tmp;
-			vector <int> temp_res = searchFullText(root, query + tmp);
+			vector <int> temp_res;
+			if (query != "") {
+				temp_res = searchFullText(root, query + " " + tmp);
+			}
+			else {
+				temp_res = searchFullText(root, tmp);
+			}
 			for (int j = 0; j < temp_res.size(); ++j) {
 				bool check = true;
 				for (int k = 0; k < res.size(); ++k) {
@@ -647,6 +654,7 @@ vector <int> operator11(trieNode* root, string text) {
 			}
 		}
 	}
+	return res;
 }
 
 
