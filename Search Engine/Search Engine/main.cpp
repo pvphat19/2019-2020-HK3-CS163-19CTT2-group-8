@@ -23,13 +23,13 @@ int main()
 	// Save data 
 	ofstream out;
 	string word;
-	out.open("mainTrie.txt");
+	/*out.open("mainTrie.txt");
 	saveTrieToFile(mainTrie, out, word);
 	out.close();
 
 	out.open("titleTrie.txt");
 	saveTrieToFile(titleTrie, out, word);
-	out.close();
+	out.close();*/
 
 	out.open("history.txt");
 	saveTrieToFile2(queryTrie, out, word);
