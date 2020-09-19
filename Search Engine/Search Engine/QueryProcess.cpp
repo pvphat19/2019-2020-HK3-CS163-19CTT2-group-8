@@ -68,7 +68,7 @@ void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <st
 
 	c.setForeColor(BLUE).setBackColor(BLACK).write("\t\t\tTop results:\n\n", false);
 	if (queryTypes.size() == 0 || queryTypes[0] == 1 || queryTypes[0] == 2 || queryTypes[0] == 3
-		|| queryTypes[0] == 5 || queryTypes[0] == 6 || queryTypes[0] == 7 || queryTypes[0] == 8 || queryTypes[0] == 10 ||queryTypes[0]==12) {
+		|| queryTypes[0] == 5 || queryTypes[0] == 6 || queryTypes[0] == 7 || queryTypes[0] == 8 || queryTypes[0] == 10) {
 		for (int i = 0; i < 5 && i < res.size(); ++i) {
 			if (i > res.size() - 1) break;
 			string docName = "";
@@ -232,7 +232,7 @@ vector<int> queryType(string query) {
 	//tra ve loai query tuong ung voi 12 loai cua thay
 	vector<int> res;
 	if (query.find("\"") != string::npos) res.push_back(9);
-	if (query.find("intittle: ") == (size_t)0) res.push_back(4);
+	if (query.find("intitle: ") == (size_t)0) res.push_back(4);
 	if (query.find("filetype: ") != string::npos) res.push_back(6);
 	if (query.find("-") != string::npos) res.push_back(3);
 	if (query.find("..") != string::npos) res.push_back(11);
@@ -332,7 +332,7 @@ void insertToTrie2(trieNode2* root, string query) {
 		else if (query[i] == '"')
 			index = 45;
 		else if (query[i] == '~')
-			index = 46;
+			index == 46;
 		else index = query[i] - '0' + 26;
 
 		if (!cur->children[index])
@@ -361,21 +361,20 @@ void saveTrieToFile2(trieNode2* root, ofstream& out, string word) {
 		out << word << " ";
 		out << endl;
 	}
-	for (int i = 0; i < 47; i++) {
+	for (int i = 0; i < SSIZE; i++) {
 		if (root->children[i]) {
 			char c;
 			if (i == 36) c = ' ';
-			else if (i == 37) c = '#';
-			else if (i == 38) c = '$';
-			else if (i < 26) c = 97 + i;
-			else if (i == 39) c = '+';
-			else if (i == 40) c = ':';
-			else if (i == 41) c = '.';
-			else if (i == 42) c = '\'';
-			else if (i == 43) c = '*';
-			else if (i == 44) c = '-';
-			else if (i == 45) c = '"';
-			else if (i == 46)c = '~';
+			else if (i == 37) c='#';
+			else if (i == 38) c='$';
+			else if (i < 26) c= 97 + i;
+			else if (i == 39) c='+';
+			else if (i == 40) c=':';
+			else if (i == 41) c='.';
+			else if (i == 42) c='\'';
+			else if (i == 43) c='*';
+			else if (i == 44) c='-';
+			else if (i == 45) c='"';
 			else c=i - 26 + 48;
 			string tem = word;
 			word += c;
@@ -429,7 +428,6 @@ void suggestions(trieNode2* root, string prefix, Console &c, int &pos, vector<st
 			else if (i == 43) prefix.push_back('*');
 			else if (i == 44) prefix.push_back('-');
 			else if (i == 45) prefix.push_back('"');
-			else if(i==46)prefix.push_back('~');
 			else prefix.push_back(i - 26 + 48);
 
 			// Recur over the rest 
@@ -474,8 +472,6 @@ int printAutoSuggestions(trieNode2* root, string query, Console &c, vector<strin
 			index = 44;
 		else if (query[i] == '"')
 			index = 45;
-		else if (query[i] == '~')
-			index = 46;
 		else index = query[i] - '0' + 26;
 
 
@@ -541,7 +537,7 @@ void getInput(trieNode2* history, string &query, Console &c) {
 			int line = suggests.size();
 			bool fn, arrow;
 			do {
-				k = readkey(fn, arrow, ch);
+				k = readkey(fn, arrow);
 				if (arrow) {
 					if (k == UP_ARROW) {
 						if (cur == -1) break;
@@ -584,7 +580,7 @@ void getInput(trieNode2* history, string &query, Console &c) {
 					}
 				}
 				else {
-					if (ch == '\r') {
+					if (k == '\r') {
 						if (cur == -1) {
 							return;
 						}
@@ -594,7 +590,7 @@ void getInput(trieNode2* history, string &query, Console &c) {
 						}
 					}
 					else {
-						
+						ch = (char)k;
 						break;
 					}
 				}

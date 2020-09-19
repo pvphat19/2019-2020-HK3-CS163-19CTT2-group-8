@@ -8,7 +8,7 @@ int main()
 	trieNode* titleTrie = initTrieNode();
 	trieNode2* queryTrie = initNode2();
 	vector<string> docPath;
-	
+
 	// Retrieve Data
 	buildDocPath(docPath);
 	

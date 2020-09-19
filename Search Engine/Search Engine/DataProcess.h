@@ -96,7 +96,7 @@ vector<int> searchWildCards(trieNode* root, string &query);
 vector <int> operator11(trieNode* root, string text);
 
 //Operator 12
-vector<int> searchSynonyms(trieNode* root, string &query);
+vector<int> searchSynonyms(trieNode* root, string query);
 
 
 

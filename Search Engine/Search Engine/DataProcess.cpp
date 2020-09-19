@@ -128,19 +128,16 @@ void indexTitle(trieNode* titleTrie, string path, int docnum) {
 	in.open(path);
 	if (in.is_open()) {
 		string line;
-		getline(in, line);
-		while (line.size()) {
-			stringstream words(line);
-			string word;
-			while (words >> word) {
-				toLower(word);
-				removePunctuation(word);
-				if (isWord(word))
-					insertToTrie(titleTrie, word, docNum);
-			}
-			line = "";
-			getline(in, line);
+		getline(in, line, '.');
+		stringstream words(line);
+		string word;
+		while (words >> word) {
+			toLower(word);
+			removePunctuation(word);
+			if (isWord(word))
+				insertToTrie(titleTrie, word, docNum);
 		}
+
 		in.close();
 	}
 }
