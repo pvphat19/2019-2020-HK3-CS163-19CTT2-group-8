@@ -20,6 +20,7 @@ void presentResult(trieNode* root, trieNode* titleTrie, string query, vector <st
 	queryTypes = queryType(query);
 
 	vector<int> res;
+
 	if (queryTypes.size() == 0) res = searchFullText(root, query);
 	else if (queryTypes[0] == 1) {
 		res = searchAnd(root, query);
@@ -229,18 +230,18 @@ string removeStopWords(string query) {
 vector<int> queryType(string query) {
 	//tra ve loai query tuong ung voi 12 loai cua thay
 	vector<int> res;
-	if (query.find(" and") != string::npos && query.find("+and") == string::npos) res.push_back(1);
-	if (query.find(" or") != string::npos) res.push_back(2);
-	if (query.find("-") != string::npos) res.push_back(3);
+	if (query.find("\"") != string::npos) res.push_back(9);
 	if (query.find("intittle: ") == (size_t)0) res.push_back(4);
-	if (query.find(" +and") != string::npos) res.push_back(5);
 	if (query.find("filetype: ") != string::npos) res.push_back(6);
+	if (query.find("-") != string::npos) res.push_back(3);
+	if (query.find("..") != string::npos) res.push_back(11);
+	if (query.find(" +and") != string::npos) res.push_back(5);
+	if (query.find(" or") != string::npos) res.push_back(2);
+	if(query[0]=='~') res.push_back(12);
+	if (query.find("*") != string::npos) res.push_back(10);
+	if (query.find(" and") != string::npos && query.find("+and") == string::npos) res.push_back(1);
 	if (query.find("$") != string::npos) res.push_back(7);
 	if (query.find("#") != string::npos) res.push_back(8);
-	if (query.find("\"") != string::npos) res.push_back(9);
-	if (query.find("*") != string::npos) res.push_back(10);
-	if (query.find("..") != string::npos) res.push_back(11);
-	if(query[0]=='~') res.push_back(12);
 	return res;
 }
 
