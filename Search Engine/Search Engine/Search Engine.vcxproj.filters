@@ -55,5 +55,8 @@
     <Text Include="titleTrie.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="synonyms.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

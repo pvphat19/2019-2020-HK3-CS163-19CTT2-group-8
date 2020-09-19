@@ -153,6 +153,7 @@
     <Text Include="history.txt" />
     <Text Include="mainTrie.txt" />
     <Text Include="stopWords.txt" />
+    <Text Include="synonyms.txt" />
     <Text Include="titleTrie.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

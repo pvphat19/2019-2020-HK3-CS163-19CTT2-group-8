@@ -62,7 +62,7 @@ public:
     Console& pause (bool cmd);   //PAUSE SCREEN
 };
 
-int readkey (bool &fn, bool &arrow);
+int readkey (bool &fn, bool &arrow, char&ch);
 
 void write_SE(Console &c);
 

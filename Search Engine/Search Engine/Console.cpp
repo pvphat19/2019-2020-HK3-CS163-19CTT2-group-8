@@ -173,10 +173,11 @@ Console& Console::pause (bool cmd = true)    //PAUSE SCREEN
     return *this;
 }
 
-int readkey (bool &fn, bool &arrow)
+int readkey (bool &fn, bool &arrow, char &ch)
 {
     fn = arrow = 0;
     int tmp = _getch();
+    ch = tmp;
     fn = !tmp;
     arrow = tmp == 224;
     if (fn || arrow)
@@ -231,10 +232,11 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
         c.toLine(12).toCol(41).setForeColor(WHITE).write("3. Exit");
 
         int ch, cur = 0;
+        char cha;
         bool fn,arrow;
         do
         {
-            ch=readkey(fn, arrow);
+            ch=readkey(fn, arrow,cha);
             if (arrow)
             {
                 if (ch==UP_ARROW)
@@ -272,6 +274,7 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
                         string query;
                         getInput(history, query, c);
                         query=removeStopWords(query);
+                        query=removeSymbols(query);
                         c.clear();
                         presentResult(mainTrie, titleTrie, query, docPath, c);
                         system("PAUSE");
