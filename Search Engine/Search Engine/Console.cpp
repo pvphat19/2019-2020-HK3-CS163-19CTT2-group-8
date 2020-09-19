@@ -271,7 +271,7 @@ void menu(Console &c, trieNode* mainTrie, trieNode* titleTrie, trieNode2* histor
                         }*/
                         string query;
                         getInput(history, query, c);
-                        removeStopWords(query);
+                        query=removeStopWords(query);
                         c.clear();
                         presentResult(mainTrie, titleTrie, query, docPath, c);
                         system("PAUSE");
