@@ -806,7 +806,6 @@ void printRange(string query, string docPath, Console& c) {
 				while (tempWord.size()>0 && (tempWord[tempWord.size() - 1] < 48 || (tempWord[tempWord.size() - 1] > 57 && tempWord[tempWord.size() - 1] < 97) || tempWord[tempWord.size() - 1] > 122)) {
 					tempWord.erase(tempWord.size() - 1, 1);
 				}
-				
 				for (int i = 0; i < queryWords.size(); ++i) {
 					if (visited[i] == false && tempWord == queryWords[i]) {
 						containKeyword = true;
@@ -856,8 +855,10 @@ void printRange(string query, string docPath, Console& c) {
 					if (!rangePrinted) stop = false;
 				}
 				if (stop) {
-					delete[]visited;
-					delete[]printed;
+					if (queryWords.size() > 0) {
+						delete[]visited;
+						delete[]printed;
+					}
 					return;
 				}
 			}
@@ -865,9 +866,10 @@ void printRange(string query, string docPath, Console& c) {
 
 		in.close();
 	}
-
-	delete[]visited;
-	delete[]printed;
+	if (queryWords.size() > 0) {
+		delete[]visited;
+		delete[]printed;
+	}
 }
 
 bool checkInRange(string range, string text) {
@@ -928,7 +930,6 @@ bool checkInRange(string range, string text) {
 		}
 
 	}
-
 	if (stof(number) > stof(num2)) return false;
 	if (stof(number) < stof(num1)) return false;
 	return true;
