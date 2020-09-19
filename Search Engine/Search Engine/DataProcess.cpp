@@ -567,7 +567,6 @@ vector <int> operator11(trieNode* root, string text) {
 	if (query != "") {
 		query.erase(query.size() - 1, 1);
 	}
-
 	if (range[0] == '$') {
 		//get two numbers in the range
 		string num1;

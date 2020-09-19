@@ -773,7 +773,7 @@ void printRange(string query, string docPath, Console& c) {
 
 	stringstream words(query);
 	string word;
-	string tem = "";
+
 	while (words >> word) {
 		if (!checkRange(word)) {
 			queryWords.push_back(word);
@@ -802,27 +802,27 @@ void printRange(string query, string docPath, Console& c) {
 			while (st >> tmp) {
 				string tempWord = tmp;
 				toLower(tempWord);
-				while (tempWord[tempWord.size() - 1] < 48 || (tempWord[tempWord.size() - 1] > 57 && tempWord[tempWord.size() - 1] < 97) || tempWord[tempWord.size() - 1] > 122) {
+				while (tempWord.size()>0 && (tempWord[tempWord.size() - 1] < 48 || (tempWord[tempWord.size() - 1] > 57 && tempWord[tempWord.size() - 1] < 97) || tempWord[tempWord.size() - 1] > 122)) {
 					tempWord.erase(tempWord.size() - 1, 1);
 				}
+				
 				for (int i = 0; i < queryWords.size(); ++i) {
-					if (visited[i] == 0 && tempWord == queryWords[i]) {
+					if (visited[i] == false && tempWord == queryWords[i]) {
 						containKeyword = true;
-						visited[i]++;
+						visited[i] = true;
 					}
 				}
 				if (rangeVisited == false && checkInRange(range, tempWord)) {
 					containKeyword = true;
 					rangeVisited = true;
 				}
-				if (containKeyword) break;
 			}
 			if (!containKeyword) continue;
 			stringstream at(line);
 			while (at >> tmp) {
 				string tempWord = tmp;
 				toLower(tempWord);
-				while (tempWord[tempWord.size() - 1] < 48 || (tempWord[tempWord.size() - 1] > 57 && tempWord[tempWord.size() - 1] < 97) || tempWord[tempWord.size() - 1] > 122) {
+				while (tempWord.size()>0 && (tempWord[tempWord.size() - 1] < 48 || (tempWord[tempWord.size() - 1] > 57 && tempWord[tempWord.size() - 1] < 97) || tempWord[tempWord.size() - 1] > 122)) {
 					tempWord.erase(tempWord.size() - 1, 1);
 				}
 				bool isQueryWords = false;
@@ -834,6 +834,7 @@ void printRange(string query, string docPath, Console& c) {
 					}
 				}
 				if (checkInRange(range, tempWord)) {
+					rangePrinted = true;
 					isQueryWords = true;
 				}
 				if (isQueryWords) {
@@ -851,7 +852,7 @@ void printRange(string query, string docPath, Console& c) {
 					}
 				}
 				if (stop == true) {
-					if (!rangeVisited) stop = false;
+					if (!rangePrinted) stop = false;
 				}
 				if (stop) {
 					delete[]visited;
